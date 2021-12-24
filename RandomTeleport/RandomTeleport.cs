@@ -22,6 +22,7 @@ namespace RandomTeleport
         public override string GetVersion() => AssemblyUtils.GetAssemblyVersionHash();
         public static RandomTeleport Instance;
         public static bool enabled = true;
+        public static bool Initialized = false;
 
         public static GlobalSettings settings { get; set; } = new GlobalSettings();
 
@@ -30,7 +31,7 @@ namespace RandomTeleport
         public void OnLoadGlobal(GlobalSettings s) => settings = s;
         public GlobalSettings OnSaveGlobal() => settings;
 
-        GameObject RandomTeleporterGo;
+        public GameObject RandomTeleporterGo;
         
         public static List<string> TeleportScenes = new List<string>();
         public static readonly List<string> exclusions = new List<string>
@@ -58,15 +59,20 @@ namespace RandomTeleport
 
             enabled = true;
 
-             RandomTeleporterGo =  new GameObject("RandomTeleporter", 
-                 typeof(TimeTeleport),
-                                typeof(DamageTeleport),
-                                typeof(KeyPressTeleport));
-            UnityEngine.Object.DontDestroyOnLoad(RandomTeleporterGo);
-            
-            TeleportScenes = Enumerable.Range(0, UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
-                .Select(sceneNumber => Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(sceneNumber)))
-                .Where(sceneName => !exclusions.Any(exclusion => sceneName.Contains(exclusion))).ToList();
+            if (!Initialized)
+            {
+                RandomTeleporterGo = new GameObject("RandomTeleporter",
+                    typeof(TimeTeleport),
+                    typeof(DamageTeleport),
+                    typeof(KeyPressTeleport));
+                UnityEngine.Object.DontDestroyOnLoad(RandomTeleporterGo);
+
+                TeleportScenes = Enumerable.Range(0, UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
+                    .Select(sceneNumber =>
+                        Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(sceneNumber)))
+                    .Where(sceneName => !exclusions.Any(exclusion => sceneName.Contains(exclusion))).ToList();
+                Initialized = true;
+            }
 
         }
         

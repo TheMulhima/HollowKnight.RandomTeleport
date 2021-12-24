@@ -23,16 +23,25 @@ namespace RandomTeleport.TeleportTriggers
             gameObject.AddComponent<DisplayTimer>();
             ModHooks.AfterTakeDamageHook += HeroDamaged;
             On.GeoCounter.AddGeo += GeoGained;
+            On.QuitToMenu.Start += ResetTimer;
+        }
+
+        private IEnumerator ResetTimer(On.QuitToMenu.orig_Start orig, QuitToMenu self)
+        {
+            timer = 0f;
+            yield return orig(self);
         }
 
         private void GeoGained(On.GeoCounter.orig_AddGeo orig, GeoCounter self, int geo)
         {
             orig(self, geo);
+            if (!RandomTeleport.enabled) return;
             if (RandomTeleport.settings.teleportTrigger == Triggers.Time) timer -= RandomTeleport.settings.timeLostFromGeo;
         }
 
         private int HeroDamaged(int hazardType, int damageAmount)
         {
+            if (!RandomTeleport.enabled) return damageAmount;
             if (RandomTeleport.settings.teleportTrigger == Triggers.Time)
             {
                 timer += RandomTeleport.settings.timeGainFromHit;

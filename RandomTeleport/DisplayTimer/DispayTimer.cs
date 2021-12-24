@@ -24,7 +24,11 @@ namespace RandomTeleport
 
         public void Update()
         {
-            if (!RandomTeleport.enabled) return;
+            if (!RandomTeleport.enabled)
+            {
+                displayTimer.SetActive(false);
+                return;
+            }
             timeTeleport ??= gameObject.GetComponent<TimeTeleport>();
 
             //conditions for not showing timer
@@ -35,15 +39,14 @@ namespace RandomTeleport
                 !RandomTeleport.settings.showTimer)
             {
                 displayTimer.SetActive(false);
+                return;
             }
-            else
-            {
-                displayTimer.SetActive(true);
-                float transitionTime = RandomTeleport.settings.teleportTime_minutes * 60f;
 
-                displayTimer.UpdateText(
-                    $"Time remaining: {((int)(transitionTime - timeTeleport.timer) / 60).ToString()}:{((int)(transitionTime - timeTeleport.timer) % 60).ToString("00")}");
-            }
+            displayTimer.SetActive(true);
+            float transitionTime = RandomTeleport.settings.teleportTime_minutes * 60f;
+
+            displayTimer.UpdateText(
+                $"Time remaining: {((int)(transitionTime - timeTeleport.timer) / 60).ToString()}:{((int)(transitionTime - timeTeleport.timer) % 60).ToString("00")}");
         }
     }
 }

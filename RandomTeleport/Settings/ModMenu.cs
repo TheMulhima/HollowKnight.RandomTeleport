@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Modding;
+using RandomTeleport.TeleportTriggers;
 using Satchel.BetterMenus;
 
 namespace RandomTeleport
@@ -17,10 +18,17 @@ namespace RandomTeleport
 
         public static MenuScreen CreateMenuScreen(MenuScreen modListMenu, ModToggleDelegates? toggleDelegates)
         {
-            MenuRef = new Menu("Random Teleport", new Satchel.BetterMenus.Element[]
+            MenuRef = new Menu("Random Teleport", new Element[]
             {
-                Blueprints.CreateToggle(toggleDelegates.GetValueOrDefault(), "Mod Toggle", ""),
-
+                new HorizontalOption("Mod Toggle", "",
+                    new string[] {"Enabled", "Disabled"},
+                    s =>
+                    {
+                        toggleDelegates.GetValueOrDefault().SetModEnabled(s == 0);
+                        RandomTeleport.Instance.RandomTeleporterGo.GetComponent<TimeTeleport>().timer = 0f;
+                    },
+                    () => toggleDelegates.GetValueOrDefault().GetModEnabled() ? 0 : 1),
+                
                 new HorizontalOption("Teleport Trigger",
                     "Choose which trigger should cause a random teleport",
                     Enum.GetNames(typeof(Triggers)),
@@ -33,6 +41,7 @@ namespace RandomTeleport
                             if (trigger == (Triggers)s) options.ForEach(option => MenuRef.Find(option).Show());
                             else  options.ForEach(option => MenuRef.Find(option).Hide());
                         } 
+                        RandomTeleport.Instance.RandomTeleporterGo.GetComponent<TimeTeleport>().timer = 0f;
                     },
                     () => (int)RandomTeleport.settings.teleportTrigger){
                 },
@@ -45,7 +54,11 @@ namespace RandomTeleport
                 new HorizontalOption("Random Teleport Time",
                     "Time between teleports in minutes",
                     Enumerable.Range(1, 40).Select(x => (x/4f).ToString()).ToArray(),
-                    s => RandomTeleport.settings.teleportTime_minutes = (s + 1)/4f,
+                    s =>
+                    {
+                        RandomTeleport.settings.teleportTime_minutes = (s + 1) / 4f;
+                        RandomTeleport.Instance.RandomTeleporterGo.GetComponent<TimeTeleport>().timer = 0f;
+                    },
                     () => (int)(RandomTeleport.settings.teleportTime_minutes * 4) - 1, Id: "teleportTime"),
 
                 new HorizontalOption("Time increase from damage",
