@@ -1,5 +1,6 @@
 # HollowKnight.RandomTeleport
-A mod that randomly Teleports you to another scene
+A mod that randomly Teleports you to another scene.  
+For any questions, bugs, or suggestions, [Join the discord](https://discord.gg/F6Y5TeFQ8j)
 
 ## Teleport Triggers
 There are 2 primary ways to randomly teleport  
