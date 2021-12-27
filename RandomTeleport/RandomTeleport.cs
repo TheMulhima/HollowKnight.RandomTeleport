@@ -12,6 +12,8 @@ using UnityEngine.SceneManagement;
 using Satchel;
 using System.Reflection;
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using RandomTeleport.TeleportTriggers;
 using Satchel.BetterMenus;
 
@@ -33,7 +35,7 @@ namespace RandomTeleport
 
         public GameObject RandomTeleporterGo;
         private TimeTeleport TimeTeleportComponent;
-        
+
         public override void Initialize()
         {
             Instance ??= this;
@@ -49,15 +51,16 @@ namespace RandomTeleport
                 UnityEngine.Object.DontDestroyOnLoad(RandomTeleporterGo);
 
                 TimeTeleportComponent = RandomTeleporterGo.GetComponent<TimeTeleport>();
-                
+
                 DebugMod.AddActionToKeyBindList(Teleport, "Randomly Teleport", "Random Teleport");
-                DebugMod.AddActionToKeyBindList(() => { TimeTeleportComponent.timer = 0f; }, "Reset Timer", "Random Teleport");
+                DebugMod.AddActionToKeyBindList(() => { TimeTeleportComponent.timer = 0f; }, "Reset Timer",
+                    "Random Teleport");
 
 
                 Initialized = true;
             }
         }
-        
+
         public MenuScreen GetMenuScreen(MenuScreen modListMenu, ModToggleDelegates? toggleDelegates) => ModMenu.CreateMenuScreen(modListMenu, toggleDelegates);
         
         public void Unload()
