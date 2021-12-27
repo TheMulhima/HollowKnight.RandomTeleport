@@ -81,29 +81,27 @@ namespace RandomTeleport
                 FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
 
                 cameraGameplayScene.SetValue(GameManager.instance.cameraCtrl, true);
-
-                GameObject[] possibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn");
+                
+                //gets all hazard respawn gos and transtion gate gos
+                GameObject[] possibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToArray();
 
                 //if no possibleSpawnLocations, then load another scene
                 if (possibleSpawnLocations.Length == 0) continue;
-                
                 HazardRespawnMarker randomSpawnLocations = possibleSpawnLocations[UnityEngine.Random.Range(0, possibleSpawnLocations.Length)].GetComponent<HazardRespawnMarker>();
                 
                 yield return null;
 
-                //gets all hazard respawn gos and transtion gate gos
                 HeroController.instance.transform.position = HeroController.instance.FindGroundPoint(randomSpawnLocations.transform.position, true);
 
                 HeroController.instance.cState.inConveyorZone = false;
-                HeroController.instance.cState.onConveyor = false;
-                HeroController.instance.cState.onConveyorV = false;
-
-                typeof(HeroController).GetMethod("FinishedEnteringScene", BindingFlags.NonPublic | BindingFlags.Instance)?
-                                      .Invoke(HeroController.instance, new object[] { true, false });
-
-                isTeleported = true;
+                    HeroController.instance.cState.onConveyor = false;
+                    HeroController.instance.cState.onConveyorV = false;
+    
+                    typeof(HeroController).GetMethod("FinishedEnteringScene", BindingFlags.NonPublic | BindingFlags.Instance)?
+                                          .Invoke(HeroController.instance, new object[] { true, false });
+    
+                    isTeleported = true;
             }
-
         }
     }
 }

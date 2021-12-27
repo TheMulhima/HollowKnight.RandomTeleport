@@ -152,52 +152,61 @@ namespace RandomTeleport
 
             if (RandomTeleport.settings.OnlyAllowInMapAndAccessibleRooms)
             {
-                List<string> DependantRooms = CompletionDependantScenes.Keys.ToList();
                 availableTeleportScenes =
-                    availableTeleportScenes.Where(scene => !DependantRooms.Contains(scene) 
-                                                           || (DependantRooms.Contains(scene) && CompletionDependantScenes[scene].Invoke())
-                                                           || isGodHomeBossScene(scene)).ToList();
+                    availableTeleportScenes.Where(CheckIfCompletionDependantScenesAreAvailable).Where(isNotGodHomeBossScene).ToList();
             }
-            
+
             if (availableTeleportScenes.Count == 0 || (availableTeleportScenes.Count == 1 && availableTeleportScenes[0] == GameManager.instance.GetSceneNameString()))
             {
                 throw new Exception($"Cannot execute teleport because no scenes available");
             }
-
             return availableTeleportScenes;
         }
 
-        internal static bool isGodHomeBossScene(string sceneName)
+        private static bool CheckIfCompletionDependantScenesAreAvailable(string scene)
         {
-            string[] GGScenesExclusions = new string[]
-            {
-                "Waterways",
-                "Atrium",
-                "Lurker",
-                "Pipeway",
-                "Spa",
-                "Unlock",
-                "Workshop",
-                "End_Sequence",
-                "Atrium_Roof",
-                "Blue_Room",
-                "Engine",
-                "Engine_Prime",
-                "Engine_Root",
-                "Entrance_Cutscene",
-                "Land_of_Storms",
-                "Boss_Door_Entrance",
-                "Wyrm",
-                "Unn",
-                "Door_5_Finale",
-                "Unlock_Wastes"
-            };
+            return !CompletionDependantScenes.TryGetValue(scene, out var func) || func.Invoke();
+        }
+        
+        private static  readonly string[] GGScenesExclusions = new string[]
+        {
+            "Waterways",
+            "Atrium",
+            "Lurker",
+            "Pipeway",
+            "Spa",
+            "Unlock",
+            "Workshop",
+            "End_Sequence",
+            "Atrium_Roof",
+            "Blue_Room",
+            "Engine",
+            "Engine_Prime",
+            "Engine_Root",
+            "Entrance_Cutscene",
+            "Land_of_Storms",
+            "Boss_Door_Entrance",
+            "Wyrm",
+            "Unn",
+            "Door_5_Finale",
+            "Unlock_Wastes"
+        };
 
+        private static bool isNotGodHomeBossScene(string sceneName)
+        {
             string[] sceneNameParts = sceneName.Split(new[] { '_' }, 2);
+            if (sceneNameParts.Length == 1)//for funny stuff like Town
+            {
+                return true;
+            }
             string scenePrefix = sceneNameParts[0];
             string sceneSuffix = sceneNameParts[1];
 
-            return scenePrefix == "GG" && !GGScenesExclusions.Contains(sceneSuffix);
+            if (scenePrefix != "GG")
+            {
+                return true;
+            }
+            return GGScenesExclusions.Contains(sceneSuffix);
         }
 
         static SceneNameParser()
