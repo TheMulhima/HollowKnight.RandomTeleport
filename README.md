@@ -18,6 +18,10 @@ There are many settings that can be toggled in the modmenu
   * `Random Teleport Time`: Choose the time between teleports (in minutes) (default: 2)
   * `Time increase from damage`: When you take damage how much of the time in the timer is increased as a penalty/reward. Can be set to 0 if you dont want this feature (default: 0)
   * `Time reduction from geo`: When you collect geo how much of the time in the timer is decreased as a penalty/reward. Can be set to 0 if you dont want this feature (default: 0)
-* `Same Area Teleport`: Choose wheter to only teleport you to the same scenes or not (default: false)
-* `Only Visited Scenes`: Choose wheter to only teleport you to scenes you have already visited (default: false)
 * `Change Scene`: The keybind and button bind that will allow you to teleport on bind press
+* Extra Settings:
+  * `Same Area Teleport`: Choose whether to only teleport you to the same scenes or not (default: false)
+  * `Only Visited Scenes`: Choose whether to only teleport you to scenes you have already visited (default: false)
+  * `AllowGodHomeBosses`: Choose whether to include godhome bosses in the pool. Note: it will cause softlock if you die/kill the boss so using the keybind is required to exit (defualt: false)
+  * `AllowTHK`: Choose whether to include THK in the pool. its defaulted to false because allowing a chance to end game early kinda boring.
+Note: Any dream scenes cant be teleported to ever with exception of godhome scenes.
