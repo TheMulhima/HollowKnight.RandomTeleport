@@ -73,26 +73,52 @@ namespace RandomTeleport
                     s => RandomTeleport.settings.timeLostFromGeo = (s - 20)/2f,
                     () => ((int)(RandomTeleport.settings.timeLostFromGeo * 2) + 20), Id: "geoTimeIncrease"),
 
-                new HorizontalOption("Same Area Teleport",
-                "Randomly teleport you in the same area",
-                new string[] { "Yes", "No"},
-                s => RandomTeleport.settings.sameAreaTeleport = s == 0,
-                () => RandomTeleport.settings.sameAreaTeleport ? 0:1),
-
-                new HorizontalOption("Only Visited Scenes",
-                "Randomly teleport you in the scenes you have already visited",
-                new string[] {"Yes", "No"},
-                s => RandomTeleport.settings.onlyVisitedScenes = s == 0,
-                () => RandomTeleport.settings.onlyVisitedScenes ? 0 : 1),
-
-                new TextPanel("It is recommended to keep a keybind just incase you get infinite transistions"),
+                new TextPanel("It is recommended to keep a keybind just in case you get infinite transitions"),
+                
                 Blueprints.KeyAndButtonBind("Change Scene",
                 RandomTeleport.settings.keybinds.keyRandomTeleport, RandomTeleport.settings.keybinds.buttonRandomTeleport,
-                Id:"changeSceneKey")
-
+                Id:"changeSceneKey"),
+                
+                
+                Blueprints.NavigateToMenu("Extra Settings", 
+                    "Settings on what rooms are included in the pool", 
+                    () => ExtraSettings(modListMenu)),
             }) ;
 
             return MenuRef.GetMenuScreen(modListMenu);
+        }
+
+        private static MenuScreen ExtraSettings(MenuScreen modListMenu)
+        {
+            return new Menu("Extra Settings", new Element[]
+            {
+                new HorizontalOption("Same Area Teleport",
+                    "Randomly teleport you in the same area",
+                    new string[] { "Yes", "No"},
+                    s => RandomTeleport.settings.sameAreaTeleport = s == 0,
+                    () => RandomTeleport.settings.sameAreaTeleport ? 0:1),
+
+                new HorizontalOption("Only Visited Scenes",
+                    "Randomly teleport you in the scenes you have already visited",
+                    new string[] {"Yes", "No"},
+                    s => RandomTeleport.settings.onlyVisitedScenes = s == 0,
+                    () => RandomTeleport.settings.onlyVisitedScenes ? 0 : 1),
+                
+                
+                new HorizontalOption("Allow godhome bosses",
+                    "Warning: Will lead to soft lock (and need use keybind)",
+                    new string[] {"Yes", "No"},
+                    s => RandomTeleport.settings.AllowGodHomeBosses = s == 0,
+                    () => RandomTeleport.settings.AllowGodHomeBosses ? 0 : 1),
+                
+                new HorizontalOption("Allow THK and Radiance",
+                    "Warning: Will lead to soft lock (and need use keybind)",
+                    new string[] {"Yes", "No"},
+                    s => RandomTeleport.settings.AllowTHK = s == 0,
+                    () => RandomTeleport.settings.AllowTHK ? 0 : 1),
+
+                
+            }).GetMenuScreen(modListMenu);
         }
     }
 }

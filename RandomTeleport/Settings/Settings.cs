@@ -24,7 +24,8 @@ namespace RandomTeleport
         public bool onlyVisitedScenes = false;
         public float timeGainFromHit = 0f;
         public float timeLostFromGeo = 0f;
-        public bool OnlyAllowInMapAndAccessibleRooms = true;
+        public bool AllowGodHomeBosses = false;
+        public bool AllowTHK = false;
 
         [JsonConverter(typeof(PlayerActionSetConverter))]
         public KeyBinds keybinds = new KeyBinds();

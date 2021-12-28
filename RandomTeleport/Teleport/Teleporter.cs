@@ -32,22 +32,18 @@ namespace RandomTeleport
                 yield break;
             }
 
-
             //for when scene transition fails
             while (!isTeleported)
             {
                 string scene = availableTeleportScenes[UnityEngine.Random.Range(0, availableTeleportScenes.Count)];
-                
                 //dont wanna load same scene. not fun
                 if (scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) continue;
                 
-                RandomTeleport.Instance.Log($"Loading Scene: {scene})");
-
+                RandomTeleport.Instance.LogDebug($"Loading Scene: {scene}");
+                
                 //yes this is a savestate load
                 GameManager.instance.entryGateName = "dreamGate";
                 GameManager.instance.startedOnThisScene = true;
-                
-                //HeroController.instance.LeaveScene();
 
                 GameManager.instance.BeginSceneTransition
                 (
@@ -83,25 +79,66 @@ namespace RandomTeleport
                 cameraGameplayScene.SetValue(GameManager.instance.cameraCtrl, true);
                 
                 //gets all hazard respawn gos and transtion gate gos
-                GameObject[] possibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToArray();
-
-                //if no possibleSpawnLocations, then load another scene
-                if (possibleSpawnLocations.Length == 0) continue;
-                HazardRespawnMarker randomSpawnLocations = possibleSpawnLocations[UnityEngine.Random.Range(0, possibleSpawnLocations.Length)].GetComponent<HazardRespawnMarker>();
-                
+                               
                 yield return null;
 
-                HeroController.instance.transform.position = HeroController.instance.FindGroundPoint(randomSpawnLocations.transform.position, true);
+                Vector3? HeroPos = GetPos(scene);
+                
+                if (!HeroPos.HasValue) continue;
+                HeroController.instance.transform.position =  HeroPos.Value;
 
-                HeroController.instance.cState.inConveyorZone = false;
+                    HeroController.instance.cState.inConveyorZone = false;
                     HeroController.instance.cState.onConveyor = false;
                     HeroController.instance.cState.onConveyorV = false;
     
                     typeof(HeroController).GetMethod("FinishedEnteringScene", BindingFlags.NonPublic | BindingFlags.Instance)?
                                           .Invoke(HeroController.instance, new object[] { true, false });
+
+                    yield return null;
+                    
     
                     isTeleported = true;
             }
+        }
+
+        private static Dictionary<string, Vector2> SpecialCases = new Dictionary<string, Vector2>()
+        {
+            //Do not ask why this dict exists. some of them just dont want to work
+            {"Deepnest_17", new Vector2(17.0f, 4.8f)},
+            {"Grimm_Main_Tent", new Vector2(14.5f, 7.0f)},
+            {"Crossroads_43", new Vector2(4.2f, 7.5f)},
+            {"Ruins1_01", new Vector2(6.72f, 17.5f)},
+            {"Fungus2_26", new Vector2(36.5f, 5.5f)},
+            {"Fungus3_35", new Vector2(16f, 5.5f)},
+            {"Deepnest_26", new Vector2(163f, 22f)},
+            {"Deepnest_41", new Vector2(78.5f, 72.5f)},
+            {"Room_Wyrm", new Vector2(18.5f, 7.5f)},
+        };
+
+        private static Vector3? GetPos(string SceneName)
+        {
+            if (SpecialCases.Keys.Contains(SceneName))
+            {
+                return SpecialCases[SceneName];
+            }
+            List<GameObject> AllpossibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToList();
+
+            if (AllpossibleSpawnLocations.Count == 0) return null;
+            
+            List<GameObject> HazardRespawnLoacations = AllpossibleSpawnLocations.Where(go => go.GetPath().Contains("Hazard Respawn Trigger")).ToList();
+            if (HazardRespawnLoacations.Count > 0)
+            {
+                return HeroController.instance.FindGroundPoint(HazardRespawnLoacations[UnityEngine.Random.Range(0, HazardRespawnLoacations.Count)].transform.position, true);
+            }
+
+            List<GameObject> DoorRespawns = AllpossibleSpawnLocations.Where(go => go.transform.parent != null && go.transform.parent.name.Contains("door")).ToList();
+            if (DoorRespawns.Count > 0)
+            {
+                return HeroController.instance.FindGroundPoint(DoorRespawns[UnityEngine.Random.Range(0, DoorRespawns.Count)].transform.position, true);
+            }
+            
+            return HeroController.instance.FindGroundPoint(AllpossibleSpawnLocations[UnityEngine.Random.Range(0, AllpossibleSpawnLocations.Count)].transform.position, true);
+
         }
     }
 }

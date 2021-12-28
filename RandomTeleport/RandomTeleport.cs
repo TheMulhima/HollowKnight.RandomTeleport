@@ -50,13 +50,16 @@ namespace RandomTeleport
                     typeof(KeyPressTeleport));
                 UnityEngine.Object.DontDestroyOnLoad(RandomTeleporterGo);
 
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneTransitionFixer.ApplyTransitionFixes;
+                On.GameManager.BeginSceneTransition += SceneTransitionFixer.ApplySaveDataChanges ;
+
                 TimeTeleportComponent = RandomTeleporterGo.GetComponent<TimeTeleport>();
 
                 DebugMod.AddActionToKeyBindList(Teleport, "Randomly Teleport", "Random Teleport");
                 DebugMod.AddActionToKeyBindList(() => { TimeTeleportComponent.timer = 0f; }, "Reset Timer",
                     "Random Teleport");
 
-
+                On.GameManager.SaveLevelState += SavePersistentBoolItems;
                 Initialized = true;
             }
         }
@@ -72,6 +75,25 @@ namespace RandomTeleport
         {
             TimeTeleportComponent.timer = 0f;
             GameManager.instance.StartCoroutine(Teleporter.TeleportCoro());
+        }
+        
+        public static void SavePersistentBoolItemState(PersistentBoolData pbd)
+        {
+            GameManager.instance.sceneData.SaveMyState(pbd);
+            QueuedPersistentBoolData.Add(pbd);
+        }
+        
+        private static List<PersistentBoolData> QueuedPersistentBoolData = new List<PersistentBoolData>();
+
+        // Save our PersistentBoolData after the game does, so we overwrite the game's data rather than the other way round
+        public static void SavePersistentBoolItems(On.GameManager.orig_SaveLevelState orig, GameManager self)
+        {
+            orig(self);
+            foreach (PersistentBoolData pbd in QueuedPersistentBoolData)
+            {
+                SceneData.instance.SaveMyState(pbd);
+            }
+            QueuedPersistentBoolData.Clear();
         }
     }
 }

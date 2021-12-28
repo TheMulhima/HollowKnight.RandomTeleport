@@ -9,7 +9,7 @@ namespace RandomTeleport
     public static class SceneNameParser
     {
         private static List<string> TeleportScenes;
-        private static readonly List<string> SceneNameExclusions = new List<string>
+        private static List<string> SceneNameExclusions = new List<string>
         {
             "Cutscene",
             "Credits",
@@ -24,41 +24,18 @@ namespace RandomTeleport
             "boss",
             "test",
             "Entrance",
-            "Finale"
+            "Finale",
+            "Dream",//this one is messy to include because dying sends you to dream nail collection for whatever reason
+            "Room_Tram",//this one breaks and i could fix it but then going to the respective room in area is same thing so not worth it
+            "Room_temple",//this one is wierd idk
+            "Grimm_Nightmare",
+            "Room_Sly_Storeroom",//cuz rando does it too (going to sly room and then basement is only option now)
+            "Room_Bretta_Basement"
         };
 
-        private static readonly Dictionary<string, Func<bool>> CompletionDependantScenes = new Dictionary<string, Func<bool>>()
-        {
-            {"Room_mapper", () => PlayerData.instance.openedMapperShop},
-            {"Room_shop", () => PlayerData.instance.slyRescued},
-            {"Room_Sly_Storeroom", () => PlayerData.instance.hasAllNailArts && ! PlayerData.instance.gotSlyCharm},
-            {"Room_Bretta", () => PlayerData.instance.brettaRescued},
-            {"Room_Bretta_Basement", () => PlayerData.instance.brettaRescued && PlayerData.instance.hasDoubleJump && PlayerData.instance.zoteDefeated},
-            {"Room_Ouiji", () => PlayerData.instance.jijiDoorUnlocked && PlayerData.instance.permadeathMode == 0},
-            {"Room_Jinn", () => PlayerData.instance.jijiDoorUnlocked && PlayerData.instance.permadeathMode == 1},
-            {"Grimm_Divine", () => PlayerData.instance.divineInTown},
-            {"Grimm_Main_Tent", () => PlayerData.instance.troupeInTown && !PlayerData.instance.defeatedNightmareGrimm},
-            {"Grimm_Nightmare", () => !PlayerData.instance.defeatedNightmareGrimm && PlayerData.instance.killedGrimm},
-            {"Dream_Mighty_Zote", () => PlayerData.instance.brettaRescued && PlayerData.instance.hasDoubleJump && PlayerData.instance.zoteDefeated},
-            {"Room_Mender_House", () => PlayerData.instance.menderDoorOpened},
-            {"Room_temple", () => false},//idk its not working. if you get to crossroads_02 its the same thing
-            {"Room_Final_Boss_Atrium", () => PlayerData.instance.openedBlackEggDoor},
-            {"Room_Final_Boss_Core", () => PlayerData.instance.openedBlackEggDoor},
-            {"Dream_Final_Boss", () => PlayerData.instance.gotShadeCharm},
-            {"Dream_01_False_Knight", () => false},//dont wanna bother with it
-            {"Dream_Guardian_Monomon", () => false},
-            {"Room_Tram_RG", () => false},
-            {"Room_Tram", () => false},
-            {"Dream_Backer_Shrine", () => false},
-            {"Dream_Room_Believer_Shrine", () => false},
-            {"Dream_02_Mage_Lord", () => false},
-            {"Ruins_House_03", () => PlayerData.instance.city2_sewerDoor},
-            {"Ruins_Bathhouses", () => PlayerData.instance.bathHouseOpened},
-            {"Dream_Guardian_Lurien", () => false},
-            {"Dream_03_Infected_Knight", () => false},
-            {"Dream_Abyss", () => PlayerData.instance.abyssGateOpened},
-            {"Dream_04_White_Defender", () => false},
-        };
+        private static string[] FinalBossScenes = new[]
+            { "Room_Final_Boss_Atrium", "Room_Final_Boss_Core"};
+        
         private static readonly Dictionary<string, List<string>> RelatedScenes = new Dictionary<string, List<string>>()
         {
             {"Town", new List<string> {"Room_Town_Stag_Station","Room_mapper","Room_shop","Room_Sly_Storeroom","Room_Bretta","Room_Bretta_Basement","Room_Ouiji","Room_Jinn","Grimm_Divine","Grimm_Main_Tent","Grimm_Nightmare","Dream_Mighty_Zote"}},
@@ -134,7 +111,7 @@ namespace RandomTeleport
         {
             
             List<string> availableTeleportScenes = TeleportScenes;
-
+            
             if (RandomTeleport.settings.onlyVisitedScenes)
             {
                 availableTeleportScenes = availableTeleportScenes.Where(scene => PlayerData.instance.scenesVisited.Contains(scene)).ToList();
@@ -150,50 +127,34 @@ namespace RandomTeleport
                 }
             }
 
-            if (RandomTeleport.settings.OnlyAllowInMapAndAccessibleRooms)
-            {
-                availableTeleportScenes =
-                    availableTeleportScenes.Where(CheckIfCompletionDependantScenesAreAvailable).Where(isNotGodHomeBossScene).ToList();
-            }
+            availableTeleportScenes = availableTeleportScenes.Where(scene => RandomTeleport.settings.AllowTHK ||  !FinalBossScenes.Contains(scene))
+                .Where(isNotGodHomeSoftLockScene).ToList();
+            
 
             if (availableTeleportScenes.Count == 0 || (availableTeleportScenes.Count == 1 && availableTeleportScenes[0] == GameManager.instance.GetSceneNameString()))
             {
                 throw new Exception($"Cannot execute teleport because no scenes available");
             }
+            
             return availableTeleportScenes;
         }
 
-        private static bool CheckIfCompletionDependantScenesAreAvailable(string scene)
-        {
-            return !CompletionDependantScenes.TryGetValue(scene, out var func) || func.Invoke();
-        }
-        
         private static  readonly string[] GGScenesExclusions = new string[]
         {
             "Waterways",
             "Atrium",
             "Lurker",
             "Pipeway",
-            "Spa",
-            "Unlock",
             "Workshop",
-            "End_Sequence",
             "Atrium_Roof",
             "Blue_Room",
-            "Engine",
-            "Engine_Prime",
-            "Engine_Root",
-            "Entrance_Cutscene",
             "Land_of_Storms",
-            "Boss_Door_Entrance",
-            "Wyrm",
-            "Unn",
-            "Door_5_Finale",
             "Unlock_Wastes"
         };
 
-        private static bool isNotGodHomeBossScene(string sceneName)
+        private static bool isNotGodHomeSoftLockScene(string sceneName)
         {
+            if (RandomTeleport.settings.AllowGodHomeBosses) return true;
             string[] sceneNameParts = sceneName.Split(new[] { '_' }, 2);
             if (sceneNameParts.Length == 1)//for funny stuff like Town
             {
@@ -206,7 +167,10 @@ namespace RandomTeleport
             {
                 return true;
             }
-            return GGScenesExclusions.Contains(sceneSuffix);
+            else
+            {
+                return GGScenesExclusions.Contains(sceneSuffix);
+            }
         }
 
         static SceneNameParser()
