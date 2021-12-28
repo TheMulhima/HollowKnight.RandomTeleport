@@ -44,7 +44,7 @@ namespace RandomTeleport.TeleportTriggers
             if (!RandomTeleport.enabled) return damageAmount;
             if (RandomTeleport.settings.teleportTrigger == Triggers.Time)
             {
-                timer += RandomTeleport.settings.timeGainFromHit;
+                if (damageAmount > 0) timer += RandomTeleport.settings.timeGainFromHit;
             }
 
             return damageAmount;

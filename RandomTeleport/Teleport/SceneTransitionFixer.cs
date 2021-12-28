@@ -149,6 +149,7 @@ namespace RandomTeleport
 
         public static void ApplySaveDataChanges(string sceneName, string entryGateName)
         {
+            if (!RandomTeleport.enabled) return;
             if (string.IsNullOrEmpty(sceneName)) return;
             entryGateName ??= string.Empty;
 
