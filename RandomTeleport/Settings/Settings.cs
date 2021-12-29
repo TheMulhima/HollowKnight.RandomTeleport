@@ -3,19 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using InControl;
+using Modding;
 using Newtonsoft.Json;
 using Modding.Converters;
 
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
     public enum Triggers
     {
         Time = 0,
         Damage,
     }
-    public class GlobalSettings
+    public class GlobalSettings: ModSettings
     {
         public float teleportTime_minutes = 2f;
         public Triggers teleportTrigger = Triggers.Time;
@@ -27,23 +27,6 @@ namespace RandomTeleport
         public bool AllowGodHomeBosses = false;
         public bool AllowTHK = false;
 
-        [JsonConverter(typeof(PlayerActionSetConverter))]
-        public KeyBinds keybinds = new KeyBinds();
-    }
-    public class KeyBinds : PlayerActionSet
-    {
-        public PlayerAction keyRandomTeleport;
-        public PlayerAction buttonRandomTeleport;
-
-        public KeyBinds()
-        {
-            keyRandomTeleport = CreatePlayerAction("keyRandomTeleport");
-            buttonRandomTeleport = CreatePlayerAction("buttonRandomTeleport");
-        }
-
-        public bool wasPressed()
-        {
-            return keyRandomTeleport.WasPressed || buttonRandomTeleport.WasPressed;
-        }
+        public string keyRandomTeleport = "";
     }
 }

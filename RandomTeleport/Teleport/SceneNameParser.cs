@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using Vasi;
 
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
     public static class SceneNameParser
     {
@@ -112,12 +113,12 @@ namespace RandomTeleport
             
             List<string> availableTeleportScenes = TeleportScenes;
             
-            if (RandomTeleport.settings.onlyVisitedScenes)
+            if (RandomTeleport1_4.Instance.settings.onlyVisitedScenes)
             {
                 availableTeleportScenes = availableTeleportScenes.Where(scene => PlayerData.instance.scenesVisited.Contains(scene)).ToList();
             }
 
-            if (RandomTeleport.settings.sameAreaTeleport)
+            if (RandomTeleport1_4.Instance.settings.sameAreaTeleport)
             {
                 availableTeleportScenes = getSameAreaScenes(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, availableTeleportScenes);
                 //if its 1 then its same scene
@@ -127,7 +128,7 @@ namespace RandomTeleport
                 }
             }
 
-            availableTeleportScenes = availableTeleportScenes.Where(scene => RandomTeleport.settings.AllowTHK ||  !FinalBossScenes.Contains(scene))
+            availableTeleportScenes = availableTeleportScenes.Where(scene => RandomTeleport1_4.Instance.settings.AllowTHK ||  !FinalBossScenes.Contains(scene))
                 .Where(isNotGodHomeSoftLockScene).ToList();
             
 
@@ -154,7 +155,7 @@ namespace RandomTeleport
 
         private static bool isNotGodHomeSoftLockScene(string sceneName)
         {
-            if (RandomTeleport.settings.AllowGodHomeBosses) return true;
+            if (RandomTeleport1_4.Instance.settings.AllowGodHomeBosses) return true;
             string[] sceneNameParts = sceneName.Split(new[] { '_' }, 2);
             if (sceneNameParts.Length == 1)//for funny stuff like Town
             {

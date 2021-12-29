@@ -1,9 +1,10 @@
-﻿using Modding;
+﻿using System.Text.RegularExpressions;
+using Modding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Satchel;
+using Vasi;
 
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
     public static class SceneTransitionFixer
     {
@@ -32,7 +33,7 @@ namespace RandomTeleport
 
         private static void ApplyTransitionFixes(Scene newScene)
         {
-            if (!RandomTeleport.enabled) return;
+            if (!RandomTeleport1_4.enabled) return;
             switch (newScene.name)
             {
                 case "Abyss_06_Core":
@@ -44,7 +45,7 @@ namespace RandomTeleport
                     }
                     if (PlayerData.instance.openedBlackEggPath)
                     {
-                        Object.Destroy(newScene.GetGameObjectByName("floor_closed"));
+                        Object.Destroy(newScene. GetGameObjectByName("floor_closed"));
                     }
                     break;
                 case "Deepnest_41":
@@ -149,14 +150,14 @@ namespace RandomTeleport
 
         public static void ApplySaveDataChanges(string sceneName, string entryGateName)
         {
-            if (!RandomTeleport.enabled) return;
+            if (!RandomTeleport1_4.enabled) return;
             if (string.IsNullOrEmpty(sceneName)) return;
             entryGateName ??= string.Empty;
 
             switch (sceneName)
             {
                 case "Tutorial_01":
-                    RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                    RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                     {
                         sceneName = "Tutorial_01",
                         id = "Initial Fall Impact",
@@ -165,63 +166,63 @@ namespace RandomTeleport
                     });
                     if (entryGateName.StartsWith("right"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Door",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Collapser Tute 01",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Tute Door 1",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Tute Door 2",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Tute Door 3",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Tute Door 4",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Tute Door 5",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Tute Door 7",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Tutorial_01",
                             id = "Break Floor 1",
@@ -235,7 +236,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("left1"))
                     {
                         PlayerData.instance.SetBool("dungDefenderWallBroken", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
                             id = "One Way Wall",
@@ -247,21 +248,21 @@ namespace RandomTeleport
                 case "Abyss_03_c":
                     if (entryGateName.StartsWith("r"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Abyss_03_c",
                             id = "Breakable Wall",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Abyss_03_c",
                             id = "Mask 1",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Abyss_03_c",
                             id = "Mask 1 (1)",
@@ -273,7 +274,7 @@ namespace RandomTeleport
                 case "Abyss_05":
                     if (entryGateName == "right1")
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Abyss_05",
                             id = "Breakable Wall",
@@ -285,14 +286,14 @@ namespace RandomTeleport
                 case "Cliffs_01":
                     if (entryGateName.StartsWith("right4"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Cliffs_01",
                             id = "Breakable Wall",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Cliffs_01",
                             id = "Breakable Wall grimm",
@@ -308,14 +309,14 @@ namespace RandomTeleport
                     PlayerData.instance.menderSignBroken = true;
                     if (entryGateName.StartsWith("d"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_04",
                             id = "Secret Mask",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_04",
                             id = "Secret Mask (1)",
@@ -334,7 +335,7 @@ namespace RandomTeleport
                 case "Crossroads_07":
                     if (entryGateName.StartsWith("left3"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_07",
                             id = "Tute Door 1",
@@ -346,7 +347,7 @@ namespace RandomTeleport
                 case "Crossroads_08":
                     if (entryGateName == "left2")
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_08",
                             id = "Battle Scene",
@@ -358,7 +359,7 @@ namespace RandomTeleport
                 case "Crossroads_09":
                     if (entryGateName.StartsWith("r"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_09",
                             id = "Break Floor 1",
@@ -372,21 +373,21 @@ namespace RandomTeleport
                     // Makes room visible entering from gwomb entrance
                     if (entryGateName.StartsWith("t"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_21",
                             id = "Breakable Wall",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_21",
                             id = "Collapser Small",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_21",
                             id = "Secret Mask (1)",
@@ -398,7 +399,7 @@ namespace RandomTeleport
                 case "Crossroads_33":
                     if (entryGateName.StartsWith("left1"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Crossroads_09",
                             id = "Break Floor 1",
@@ -416,14 +417,14 @@ namespace RandomTeleport
                 case "Deepnest_01":
                     if (entryGateName.StartsWith("r"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_01",
                             id = "Breakable Wall",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus2_20",
                             id = "Breakable Wall Waterways",
@@ -435,7 +436,7 @@ namespace RandomTeleport
                 case "Deepnest_02":
                     if (entryGateName.StartsWith("r"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_02",
                             id = "Breakable Wall",
@@ -447,7 +448,7 @@ namespace RandomTeleport
                 case "Deepnest_03":
                     if (entryGateName.StartsWith("left2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_03",
                             id = "Breakable Wall",
@@ -459,14 +460,14 @@ namespace RandomTeleport
                 case "Deepnest_26":
                     if (entryGateName.StartsWith("left2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_26",
                             id = "Inverse Remasker",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_26",
                             id = "Secret Mask (1)",
@@ -478,35 +479,35 @@ namespace RandomTeleport
                 case "Deepnest_31":
                     if (entryGateName.StartsWith("right2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_31",
                             id = "Secret Mask",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_31",
                             id = "Secret Mask (1)",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_31",
                             id = "Secret Mask (2)",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_31",
                             id = "Breakable Wall",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_31",
                             id = "Breakable Wall (1)",
@@ -519,7 +520,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("r"))
                     {
                         PlayerData.instance.SetBool("outskirtsWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_East_02",
                             id = "One Way Wall",
@@ -532,7 +533,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("left2"))
                     {
                         PlayerData.instance.SetBool("outskirtsWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_East_02",
                             id = "One Way Wall",
@@ -544,7 +545,7 @@ namespace RandomTeleport
                 case "Deepnest_East_16":
                     if (entryGateName.StartsWith("b"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_East_16",
                             id = "Quake Floor",
@@ -556,14 +557,14 @@ namespace RandomTeleport
                 case "Fungus2_20":
                     if (entryGateName.StartsWith("l"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_01",
                             id = "Breakable Wall",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus2_20",
                             id = "Breakable Wall Waterways",
@@ -576,7 +577,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("right1"))
                     {
                         PlayerData.instance.SetBool("oneWayArchive", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_47",
                             id = "One Way Wall",
@@ -589,7 +590,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("left2"))
                     {
                         PlayerData.instance.SetBool("openedGardensStagStation", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_40",
                             id = "Gate Switch",
@@ -602,7 +603,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("r"))
                     {
                         PlayerData.instance.SetBool("openedGardensStagStation", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_40",
                             id = "Gate Switch",
@@ -612,7 +613,7 @@ namespace RandomTeleport
                     }
                     break;
                 case "Fungus3_44":
-                    RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                    RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                     {
                         sceneName = "Fungus3_44",
                         id = "Secret Mask",
@@ -624,7 +625,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("l"))
                     {
                         PlayerData.instance.SetBool("oneWayArchive", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_47",
                             id = "One Way Wall",
@@ -638,7 +639,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("left2"))
                     {
                         PlayerData.instance.SetBool("brokeMinersWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Mines_05",
                             id = "Breakable Wall",
@@ -651,14 +652,14 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("b"))
                     {
                         PlayerData.instance.SetBool("openedRestingGrounds02", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_06",
                             id = "Resting Grounds Slide Floor",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_06",
                             id = "Gate Switch",
@@ -675,7 +676,7 @@ namespace RandomTeleport
                     }
                     if (entryGateName.StartsWith("b"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_05",
                             id = "Quake Floor",
@@ -688,14 +689,14 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("t"))
                     {
                         PlayerData.instance.SetBool("openedRestingGrounds02", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_06",
                             id = "Resting Grounds Slide Floor",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_06",
                             id = "Gate Switch",
@@ -708,7 +709,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("l"))
                     {
                         PlayerData.instance.SetBool("restingGroundsCryptWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_10",
                             id = "One Way Wall",
@@ -718,14 +719,14 @@ namespace RandomTeleport
                     }
                     if (entryGateName.StartsWith("top2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_10",
                             id = "Breakable Wall (5)",
                             activated = true,
                             semiPersistent = false
                         });
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_10",
                             id = "Breakable Wall (7)",
@@ -752,7 +753,7 @@ namespace RandomTeleport
                     {
                         PlayerData.instance.SetBool("brokenMageWindow", true);
                         PlayerData.instance.SetBool("brokenMageWindowGlass", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_30",
                             id = "Quake Floor Glass (2)",
@@ -764,7 +765,7 @@ namespace RandomTeleport
                 case "Ruins1_24":
                     if (entryGateName.StartsWith("right2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_24",
                             id = "Secret Mask (1)",
@@ -778,7 +779,7 @@ namespace RandomTeleport
                     {
                         PlayerData.instance.SetBool("brokenMageWindow", true);
                         PlayerData.instance.SetBool("brokenMageWindowGlass", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_30",
                             id = "Quake Floor Glass (2)",
@@ -794,7 +795,7 @@ namespace RandomTeleport
                     }
                     if (entryGateName.StartsWith("left2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_31",
                             id = "Ruins Lever",
@@ -806,7 +807,7 @@ namespace RandomTeleport
                 case "Ruins1_31b":
                     if (entryGateName.StartsWith("right1"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_31",
                             id = "Ruins Lever",
@@ -818,7 +819,7 @@ namespace RandomTeleport
                 case "Ruins2_01":
                     if (entryGateName.StartsWith("t"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins2_01",
                             id = "Secret Mask",
@@ -831,7 +832,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("door_Ruin_House_03"))
                     {
                         PlayerData.instance.SetBool("city2_sewerDoor", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_House_03",
                             id = "Ruins Lever",
@@ -848,7 +849,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("r"))
                     {
                         PlayerData.instance.SetBool("restingGroundsCryptWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_10",
                             id = "One Way Wall",
@@ -861,7 +862,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("l"))
                     {
                         PlayerData.instance.SetBool("bathHouseWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_Bathhouse",
                             id = "Breakable Wall",
@@ -880,7 +881,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("left1"))
                     {
                         PlayerData.instance.SetBool("city2_sewerDoor", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_House_03",
                             id = "Ruins Lever",
@@ -893,7 +894,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("r"))
                     {
                         PlayerData.instance.SetBool("bathHouseWall", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_Bathhouse",
                             id = "Breakable Wall",
@@ -931,7 +932,7 @@ namespace RandomTeleport
                     }
                     if (entryGateName != "left1")
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Town",
                             id = "Door Destroyer",
@@ -947,7 +948,7 @@ namespace RandomTeleport
                     }
                     if (entryGateName.StartsWith("r"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_01",
                             id = "Breakable Wall Waterways",
@@ -959,7 +960,7 @@ namespace RandomTeleport
                 case "Waterways_02":
                     if (entryGateName.StartsWith("bot1"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_02",
                             id = "Quake Floor",
@@ -971,7 +972,7 @@ namespace RandomTeleport
                 case "Waterways_04":
                     if (entryGateName.StartsWith("b"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_04",
                             id = "Quake Floor (1)",
@@ -984,7 +985,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("r"))
                     {
                         PlayerData.instance.SetBool("dungDefenderWallBroken", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
                             id = "One Way Wall",
@@ -994,7 +995,7 @@ namespace RandomTeleport
                     }
                     if (entryGateName.StartsWith("bot2"))
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
                             id = "Quake Floor",
@@ -1007,7 +1008,7 @@ namespace RandomTeleport
                     if (entryGateName.StartsWith("right1"))
                     {
                         PlayerData.instance.SetBool("waterwaysAcidDrained", true);
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
                             id = "Waterways_Crank_Lever",
@@ -1019,7 +1020,7 @@ namespace RandomTeleport
                 case "Waterways_08":
                     if (entryGateName == "left2")
                     {
-                        RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
+                        RandomTeleport1_4.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_08",
                             id = "Breakable Wall Waterways",

@@ -1,22 +1,22 @@
 ﻿using Modding;
 using UnityEngine;
 
-namespace RandomTeleport.TeleportTriggers
+namespace RandomTeleport1_4.TeleportTriggers
 {
     public class DamageTeleport:MonoBehaviour
     {
         public void Awake()
         {
-            ModHooks.AfterTakeDamageHook += HeroDamaged;
+            ModHooks.Instance.AfterTakeDamageHook += HeroDamaged;
         }
 
         private int HeroDamaged(int hazardtype, int damageamount)
         {
-            if (!RandomTeleport.enabled) return damageamount;
+            if (!RandomTeleport1_4.enabled) return damageamount;
             
-            if (RandomTeleport.settings.teleportTrigger == Triggers.Damage)
+            if (RandomTeleport1_4.Instance.settings.teleportTrigger == Triggers.Damage)
             {
-                if (damageamount > 0) RandomTeleport.Instance.Teleport();
+                if (damageamount > 0) RandomTeleport1_4.Instance.Teleport();
             }
 
             return damageamount;

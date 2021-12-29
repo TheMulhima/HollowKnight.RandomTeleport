@@ -6,12 +6,11 @@ using System.Linq;
 using System.Reflection;
 using GlobalEnums;
 using Modding;
-using Satchel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Random = System.Random;
 
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
     public static class Teleporter
     {
@@ -27,7 +26,7 @@ namespace RandomTeleport
             }
             catch (Exception e)
             {
-                RandomTeleport.Instance.Log($"Cannot execute teleport because error occured: {e.Message}");
+                RandomTeleport1_4.Instance.Log($"Cannot execute teleport because error occured: {e.Message}");
                 //theres no scene to be teleported so no teleportation
                 yield break;
             }
@@ -39,7 +38,7 @@ namespace RandomTeleport
                 //dont wanna load same scene. not fun
                 if (scene == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name) continue;
                 
-                RandomTeleport.Instance.LogDebug($"Loading Scene: {scene}");
+                RandomTeleport1_4.Instance.LogDebug($"Loading Scene: {scene}");
                 
                 //yes this is a savestate load
                 GameManager.instance.entryGateName = "dreamGate";
@@ -59,7 +58,7 @@ namespace RandomTeleport
                     }
                 );
 
-                ReflectionHelper.SetField(GameManager.instance.cameraCtrl, "isGameplayScene", true);
+                ReflectionHelper.SetAttr(GameManager.instance.cameraCtrl, "isGameplayScene", true);
 
                 GameManager.instance.cameraCtrl.PositionToHero(false);
 

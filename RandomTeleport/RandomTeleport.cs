@@ -9,31 +9,36 @@ using On;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using Satchel;
 using System.Reflection;
 using System.Collections.Generic;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using RandomTeleport.TeleportTriggers;
-using Satchel.BetterMenus;
+using RandomTeleport1_4.TeleportTriggers;
+using Vasi;
+using Random = System.Random;
 
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
-    public class RandomTeleport : Mod,IGlobalSettings<GlobalSettings>,ICustomMenuMod,ITogglableMod
+    public class RandomTeleport1_4 : Mod,ITogglableMod
     {
-        public override string GetVersion() => AssemblyUtils.GetAssemblyVersionHash();
-        public static RandomTeleport Instance;
-        public static bool enabled = true;
-        public static bool Initialized = false;
+        public override string GetVersion() => Vasi.VersionUtil.GetVersion<RandomTeleport1_4>();
+        public string GetName() => "RandomTeleport1_4";
 
-        public static GlobalSettings settings { get; set; } = new GlobalSettings();
+        public static RandomTeleport1_4 Instance;
+        public static bool enabled = false;
+        public static bool Initialized = false;
+        
+        public GlobalSettings settings = new GlobalSettings();
+        public override ModSettings GlobalSettings
+        {
+            get => settings;
+            set => settings = (GlobalSettings) value;
+        }
 
         public bool ToggleButtonInsideMenu => true;
+        
 
-        public void OnLoadGlobal(GlobalSettings s) => settings = s;
-        public GlobalSettings OnSaveGlobal() => settings;
-
-        public GameObject RandomTeleporterGo;
+        public GameObject RandomTeleport1_4erGo;
         private TimeTeleport TimeTeleportComponent;
 
         public override void Initialize()
@@ -44,16 +49,16 @@ namespace RandomTeleport
 
             if (!Initialized)
             {
-                RandomTeleporterGo = new GameObject("RandomTeleporter",
+                RandomTeleport1_4erGo = new GameObject("RandomTeleport1_4er",
                     typeof(TimeTeleport),
                     typeof(DamageTeleport),
                     typeof(KeyPressTeleport));
-                UnityEngine.Object.DontDestroyOnLoad(RandomTeleporterGo);
+                UnityEngine.Object.DontDestroyOnLoad(RandomTeleport1_4erGo);
 
                 UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneTransitionFixer.ApplyTransitionFixes;
                 On.GameManager.BeginSceneTransition += SceneTransitionFixer.ApplySaveDataChanges ;
 
-                TimeTeleportComponent = RandomTeleporterGo.GetComponent<TimeTeleport>();
+                TimeTeleportComponent = RandomTeleport1_4erGo.GetComponent<TimeTeleport>();
 
                 DebugMod.AddActionToKeyBindList(Teleport, "Randomly Teleport", "Random Teleport");
                 DebugMod.AddActionToKeyBindList(() => { TimeTeleportComponent.timer = 0f; }, "Reset Timer",
@@ -63,8 +68,6 @@ namespace RandomTeleport
                 Initialized = true;
             }
         }
-
-        public MenuScreen GetMenuScreen(MenuScreen modListMenu, ModToggleDelegates? toggleDelegates) => ModMenu.CreateMenuScreen(modListMenu, toggleDelegates);
         
         public void Unload()
         {

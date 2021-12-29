@@ -7,11 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RandomTeleport.TeleportTriggers
+namespace RandomTeleport1_4.TeleportTriggers
 {
     class TimeTeleport : MonoBehaviour
     {
@@ -21,7 +20,7 @@ namespace RandomTeleport.TeleportTriggers
         {
             //add a display timer
             gameObject.AddComponent<DisplayTimer>();
-            ModHooks.AfterTakeDamageHook += HeroDamaged;
+            ModHooks.Instance.AfterTakeDamageHook += HeroDamaged;
             On.GeoCounter.AddGeo += GeoGained;
             On.QuitToMenu.Start += ResetTimer;
         }
@@ -35,18 +34,18 @@ namespace RandomTeleport.TeleportTriggers
         private void GeoGained(On.GeoCounter.orig_AddGeo orig, GeoCounter self, int geo)
         {
             orig(self, geo);
-            if (!RandomTeleport.enabled) return;
-            if (RandomTeleport.settings.teleportTrigger == Triggers.Time) timer -= RandomTeleport.settings.timeLostFromGeo;
+            if (!RandomTeleport1_4.enabled) return;
+            if (RandomTeleport1_4.Instance.settings.teleportTrigger == Triggers.Time) timer -= RandomTeleport1_4.Instance.settings.timeLostFromGeo;
         }
 
         private int HeroDamaged(int hazardType, int damageAmount)
         {
-            if (!RandomTeleport.enabled) return damageAmount;
-            if (RandomTeleport.settings.teleportTrigger == Triggers.Time)
+            if (!RandomTeleport1_4.enabled) return damageAmount;
+            if (RandomTeleport1_4.Instance.settings.teleportTrigger == Triggers.Time)
             {
                 if (damageAmount > 0)
                 {
-                    timer += RandomTeleport.settings.timeGainFromHit;
+                    timer += RandomTeleport1_4.Instance.settings.timeGainFromHit;
                 }
             }
 
@@ -55,9 +54,9 @@ namespace RandomTeleport.TeleportTriggers
 
         public void Update()
         {
-            if (!RandomTeleport.enabled) return;
+            if (!RandomTeleport1_4.enabled) return;
 
-            if (RandomTeleport.settings.teleportTrigger == Triggers.Time)
+            if (RandomTeleport1_4.Instance.settings.teleportTrigger == Triggers.Time)
             {
                 //conditions for not incrementing timer
                 if (GameManager.instance.GetSceneNameString() == "Menu_Title" ||
@@ -66,13 +65,13 @@ namespace RandomTeleport.TeleportTriggers
                     HeroController.instance.cState.hazardRespawning ||
                     GameManager.instance.isPaused) return;
                 
-                float transitionTime = RandomTeleport.settings.teleportTime_minutes * 60f;
+                float transitionTime = RandomTeleport1_4.Instance.settings.teleportTime_minutes * 60f;
                 timer += Time.deltaTime;
                 if (timer > transitionTime)
                 {
                     timer = 0f;
 
-                    RandomTeleport.Instance.Teleport();
+                    RandomTeleport1_4.Instance.Teleport();
                 }
             }
         }

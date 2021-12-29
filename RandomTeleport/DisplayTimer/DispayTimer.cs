@@ -1,9 +1,9 @@
 ﻿using Modding;
-using RandomTeleport.TeleportTriggers;
+using RandomTeleport1_4.TeleportTriggers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
     public class DisplayTimer:MonoBehaviour
     {
@@ -24,7 +24,7 @@ namespace RandomTeleport
 
         public void Update()
         {
-            if (!RandomTeleport.enabled)
+            if (!RandomTeleport1_4.enabled)
             {
                 displayTimer.SetActive(false);
                 return;
@@ -32,18 +32,18 @@ namespace RandomTeleport
             timeTeleport ??= gameObject.GetComponent<TimeTeleport>();
 
             //conditions for not showing timer
-            if (!RandomTeleport.enabled ||
+            if (!RandomTeleport1_4.enabled ||
                 GameManager.instance.GetSceneNameString() == "Menu_Title" ||
                 GameManager.instance.IsNonGameplayScene() ||
-                RandomTeleport.settings.teleportTrigger != Triggers.Time ||
-                !RandomTeleport.settings.showTimer)
+                RandomTeleport1_4.Instance.settings.teleportTrigger != Triggers.Time ||
+                !RandomTeleport1_4.Instance.settings.showTimer)
             {
                 displayTimer.SetActive(false);
                 return;
             }
 
             displayTimer.SetActive(true);
-            float transitionTime = RandomTeleport.settings.teleportTime_minutes * 60f;
+            float transitionTime = RandomTeleport1_4.Instance.settings.teleportTime_minutes * 60f;
 
             displayTimer.UpdateText(
                 $"Time remaining: {((int)(transitionTime - timeTeleport.timer) / 60).ToString()}:{((int)(transitionTime - timeTeleport.timer) % 60).ToString("00")}");

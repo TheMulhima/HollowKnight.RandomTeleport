@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{330F261C-3700-41B5-8770-3542243DD26A}</ProjectGuid>
-    <RootNamespace>RandomTeleport</RootNamespace>
-    <AssemblyTitle>RandomTeleport</AssemblyTitle>
+    <RootNamespace>RandomTeleport1_4</RootNamespace>
+    <AssemblyTitle>RandomTeleport1_4</AssemblyTitle>
     <AssemblyVersion>0.0.3.1</AssemblyVersion>
     <Deterministic>true</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net35</TargetFramework>
     <NoWarn>CS1591</NoWarn>
-  <HollowKnightFolder>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed</HollowKnightFolder>
-  <ModsDirectory>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\</ModsDirectory>
+  <HollowKnightFolder>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight 1.4 Modded\hollow_knight_Data\Managed</HollowKnightFolder>
+  <ModsDirectory>C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight 1.4 Modded\hollow_knight_Data\Managed\Mods\</ModsDirectory>
   </PropertyGroup>
 
   <!-- Same References -->
@@ -18,20 +18,8 @@
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
-      <HintPath>$(HollowKnightFolder)\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.RuntimeDetour, Version=21.4.29.1, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\MonoMod.RuntimeDetour.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMod.Utils, Version=21.4.29.1, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\MonoMod.Utils.dll</HintPath>
-    </Reference>
     <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\PlayMaker.dll</HintPath>
-    </Reference>
-    <Reference Include="Satchel, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\Mods\Satchel\Satchel.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.dll</HintPath>
@@ -63,26 +51,19 @@
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.UIModule.dll</HintPath>
     </Reference>
-
-    <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\MMHOOK_Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\UnityEngine.InputLegacyModule.dll</HintPath>
-    </Reference>
-    <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
-      <HintPath>$(HollowKnightFolder)\netstandard.dll</HintPath>
+    <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>$(HollowKnightFolder)\UnityEngine.InputModule.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>$(HollowKnightFolder)\mscorlib.dll</HintPath>
     </Reference>
+    <Reference Include="Vasi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>$(HollowKnightFolder)\Mods\Vasi.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsDirectory)\$(TargetName)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsDirectory)" SkipUnchangedFiles="true" />
   </Target>
 
   <Target Name="CreateReleaseZip" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
@@ -94,9 +75,6 @@
     <ZipDirectory DestinationFile="$(ProjectDir)/$(TargetName).zip" SourceDirectory="$(ProjectDir)/Output" />
     <RemoveDir Directories="$(ProjectDir)Output" />
 
-    <GetFileHash Files="$(ProjectDir)/$(TargetName).zip" Algorithm="SHA256">
-      <Output TaskParameter="Items" ItemName="FilesWithHashes" />
-    </GetFileHash>
     <Message Importance="High" Text="@(FilesWithHashes->'%(Identity): %(FileHash)')" />
   </Target>
 

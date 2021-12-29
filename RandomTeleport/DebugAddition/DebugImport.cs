@@ -2,7 +2,7 @@
 using MonoMod.ModInterop;
 
 // Replace the namespace with your project's root namespace
-namespace RandomTeleport
+namespace RandomTeleport1_4
 {
     internal static class DebugMod
     {
