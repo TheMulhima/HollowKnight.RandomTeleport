@@ -25,3 +25,6 @@ There are many settings that can be toggled in the modmenu
   * `AllowGodHomeBosses`: Choose whether to include godhome bosses in the pool. Note: it will cause softlock if you die/kill the boss so using the keybind is required to exit (defualt: false)
   * `AllowTHK`: Choose whether to include THK in the pool. its defaulted to false because allowing a chance to end game early kinda boring.
 Note: Any dream scenes cant be teleported to ever with exception of godhome scenes.
+
+###For 1.4
+* To set a keybind, open `RandomTeleport1_4.globalsettings.json` in the saves folder and in the field `keyRandomTeleport` insert a string from [this list](https://gist.github.com/TheMulhima/28fe7eaaa74250de58a5aac708bbda9f)
