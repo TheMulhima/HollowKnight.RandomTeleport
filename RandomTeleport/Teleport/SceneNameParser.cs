@@ -9,6 +9,7 @@ namespace RandomTeleport
     public static class SceneNameParser
     {
         private static List<string> TeleportScenes;
+        private static List<string> AllScenes;
         private static List<string> SceneNameExclusions = new List<string>
         {
             "Cutscene",
@@ -173,11 +174,15 @@ namespace RandomTeleport
             }
         }
 
+        public static bool IsAScene(this string scene) => AllScenes.Contains(scene);
+
         static SceneNameParser()
         {
-            TeleportScenes = Enumerable.Range(0, UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
-                .Select(sceneNumber => Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(sceneNumber)))
-                .Where(sceneName => !SceneNameExclusions.Any(exclusion => sceneName.Contains(exclusion))).ToList();
+            AllScenes = Enumerable.Range(0, UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
+                .Select(sceneNumber => Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(sceneNumber))).ToList();
+                
+                TeleportScenes = AllScenes
+                    .Where(sceneName => !SceneNameExclusions.Any(exclusion => sceneName.Contains(exclusion))).ToList();
         }
     }
 }

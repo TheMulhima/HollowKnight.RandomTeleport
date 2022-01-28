@@ -18,6 +18,9 @@
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="MagicUI, Version=1.0.8060.11819, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Dependancies\MagicUI.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
       <HintPath>$(HollowKnightFolder)\Mono.Cecil.dll</HintPath>
     </Reference>
@@ -31,10 +34,13 @@
       <HintPath>$(HollowKnightFolder)\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="Satchel, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\Mods\Satchel\Satchel.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\Mods\Dependancies\Satchel.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>$(HollowKnightFolder)\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.AudioModule.dll</HintPath>
@@ -59,6 +65,9 @@
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight 1.4 Modded\hollow_knight_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.UIModule.dll</HintPath>

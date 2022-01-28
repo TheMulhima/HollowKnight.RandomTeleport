@@ -1,82 +1,130 @@
-﻿using System;
-using System.Collections;
-using System.IO;
-using System.Linq;
-using GlobalEnums;
-using HutongGames.PlayMaker;
+﻿using System.Collections;
 using Modding;
-using On;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using Satchel;
-using System.Reflection;
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using RandomTeleport.TeleportTriggers;
-using Satchel.BetterMenus;
 
 namespace RandomTeleport
 {
-    public class RandomTeleport : Mod,IGlobalSettings<GlobalSettings>,ICustomMenuMod,ITogglableMod
+    public class RandomTeleport : Mod,IGlobalSettings<GlobalSettings>,ILocalSettings<SaveSettings>,ITogglableMod, ICustomMenuMod
     {
         public override string GetVersion() => AssemblyUtils.GetAssemblyVersionHash();
+
         public static RandomTeleport Instance;
-        public static bool enabled = true;
-        public static bool Initialized = false;
-
+        public static int currentSeed = new System.Random().Next(999999);
+        
         public static GlobalSettings settings { get; set; } = new GlobalSettings();
-
-        public bool ToggleButtonInsideMenu => true;
-
         public void OnLoadGlobal(GlobalSettings s) => settings = s;
         public GlobalSettings OnSaveGlobal() => settings;
+        public static SaveSettings saveSettings { get; set; } = new SaveSettings();
+        public void OnLoadLocal(SaveSettings s) => saveSettings = s;
+        public SaveSettings OnSaveLocal() => saveSettings;
+        public bool ToggleButtonInsideMenu => true;
+        
 
-        public GameObject RandomTeleporterGo;
-        private TimeTeleport TimeTeleportComponent;
+        public static GameObject RandomTeleporterGo = null;
+
+        private static Dictionary<Triggers, TeleportTrigger> TriggerComponents = new Dictionary<Triggers, TeleportTrigger>();
 
         public override void Initialize()
         {
             Instance ??= this;
-
-            enabled = true;
-
-            if (!Initialized)
+            if (RandomTeleporterGo == null)
             {
                 RandomTeleporterGo = new GameObject("RandomTeleporter",
                     typeof(TimeTeleport),
                     typeof(DamageTeleport),
                     typeof(KeyPressTeleport));
-                UnityEngine.Object.DontDestroyOnLoad(RandomTeleporterGo);
+                Object.DontDestroyOnLoad(RandomTeleporterGo);
+                TriggerComponents.Add(Triggers.Time, RandomTeleporterGo.GetAddComponent<TimeTeleport>());
+                TriggerComponents.Add(Triggers.Damage, RandomTeleporterGo.GetAddComponent<DamageTeleport>());
+                TriggerComponents.Add(Triggers.KeyPress, RandomTeleporterGo.GetAddComponent<KeyPressTeleport>());
+                AddToDebug();
+            }
 
-                UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneTransitionFixer.ApplyTransitionFixes;
-                On.GameManager.BeginSceneTransition += SceneTransitionFixer.ApplySaveDataChanges ;
+            UpdateEnabledComponents();
 
-                TimeTeleportComponent = RandomTeleporterGo.GetComponent<TimeTeleport>();
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SceneTransitionFixer.ApplyTransitionFixes;
+            On.GameManager.BeginSceneTransition += SceneTransitionFixer.ApplySaveDataChanges;
+            On.GameManager.SaveLevelState += SavePersistentBoolItems;
 
-                DebugMod.AddActionToKeyBindList(Teleport, "Randomly Teleport", "Random Teleport");
-                DebugMod.AddActionToKeyBindList(() => { TimeTeleportComponent.timer = 0f; }, "Reset Timer",
-                    "Random Teleport");
+            //new game hook compatible with rando
+            On.UIManager.StartNewGame += CreateRNG;
 
-                On.GameManager.SaveLevelState += SavePersistentBoolItems;
-                Initialized = true;
+            //to make sure 2 new games created in same session dont result in same rng seed
+            On.QuitToMenu.Start += ResetCurrentSeed;
+
+        }
+
+        public void UpdateEnabledComponents()
+        {
+            foreach (var (Triggers, component) in TriggerComponents)
+            {
+                if (settings.TriggersState[Triggers])
+                {
+                    component.Load();
+                }
+                else
+                {
+                    component.Unload();
+                }
             }
         }
 
-        public MenuScreen GetMenuScreen(MenuScreen modListMenu, ModToggleDelegates? toggleDelegates) => ModMenu.CreateMenuScreen(modListMenu, toggleDelegates);
+        private void AddToDebug()
+        {
+            DebugMod.AddActionToKeyBindList(Teleport, "Randomly Teleport", "Random Teleport");
+            DebugMod.AddActionToKeyBindList(ResetTimer, "Reset Timer", "Random Teleport");
+            DebugMod.AddActionToKeyBindList(TeleportToPrevious, "Go to previous teleport", "Random Teleport");
+            DebugMod.AddActionToKeyBindList(() => DebugMod.LogToConsole($"The current seed is {saveSettings.seed}"), 
+                "Log seed to console", "Random Teleport");
+        }
+
+        private IEnumerator ResetCurrentSeed(On.QuitToMenu.orig_Start orig, QuitToMenu self)
+        {
+            currentSeed = new System.Random().Next(999999);
+            yield return orig(self);
+        }
+
+        private void CreateRNG(On.UIManager.orig_StartNewGame orig, UIManager self, bool permadeath, bool bossrush)
+        {
+            orig(self, permadeath, bossrush);
+            saveSettings.RNG = new System.Random(currentSeed);
+            saveSettings.seed = currentSeed;
+        }
+
+        public MenuScreen GetMenuScreen(MenuScreen modListMenu, ModToggleDelegates? toggleDelegates) => ModMenu.CreateMenuScreen(modListMenu, toggleDelegates.GetValueOrDefault());
         
         public void Unload()
         {
-            enabled = false;
+            foreach (var (_, component) in TriggerComponents)
+            {
+                component.Unload();
+            }
+            
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SceneTransitionFixer.ApplyTransitionFixes;
+            On.GameManager.BeginSceneTransition -= SceneTransitionFixer.ApplySaveDataChanges;
+            On.GameManager.SaveLevelState -= SavePersistentBoolItems;
+            On.UIManager.StartNewGame -= CreateRNG;
+            On.QuitToMenu.Start -= ResetCurrentSeed;
         }
 
         public void Teleport()
         {
-            TimeTeleportComponent.timer = 0f;
+            ResetTimer();
             GameManager.instance.StartCoroutine(Teleporter.TeleportCoro());
         }
-        
+        public void TeleportToPrevious()
+        {
+            GameManager.instance.StartCoroutine(Teleporter.TeleportCoro(true));
+        }
+
+        public void ResetTimer()
+        {
+            ((TimeTeleport)TriggerComponents[Triggers.Time]).timer = 0f;
+        }
+
         public static void SavePersistentBoolItemState(PersistentBoolData pbd)
         {
             GameManager.instance.sceneData.SaveMyState(pbd);

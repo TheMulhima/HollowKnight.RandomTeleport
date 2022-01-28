@@ -1,22 +1,31 @@
-﻿using Modding;
+﻿using System;
+using System.Linq;
+using Modding;
 using UnityEngine;
 
 namespace RandomTeleport.TeleportTriggers
 {
-    public class DamageTeleport:MonoBehaviour
+    public class DamageTeleport:TeleportTrigger
     {
-        public void Awake()
+        protected override void Enable()
         {
             ModHooks.AfterTakeDamageHook += HeroDamaged;
         }
 
+        protected override void Disable()
+        {
+            ModHooks.AfterTakeDamageHook -= HeroDamaged;
+        }
+
         private int HeroDamaged(int hazardtype, int damageamount)
         {
-            if (!RandomTeleport.enabled) return damageamount;
-            
-            if (RandomTeleport.settings.teleportTrigger == Triggers.Damage)
+            int chance = UnityEngine.Random.Range(0, 100);
+            if (damageamount > 0)
             {
-                if (damageamount > 0) RandomTeleport.Instance.Teleport();
+                if ( chance <= RandomTeleport.settings.chanceOfTeleportOnDamage)
+                {
+                    RandomTeleport.Instance.Teleport();
+                }
             }
 
             return damageamount;
