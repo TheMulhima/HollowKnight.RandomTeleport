@@ -3,7 +3,7 @@
     <ProjectGuid>{330F261C-3700-41B5-8770-3542243DD26A}</ProjectGuid>
     <RootNamespace>RandomTeleport</RootNamespace>
     <AssemblyTitle>RandomTeleport</AssemblyTitle>
-    <AssemblyVersion>0.0.3.1</AssemblyVersion>
+    <AssemblyVersion>0.0.4.0</AssemblyVersion>
     <Deterministic>true</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>
@@ -19,7 +19,7 @@
       <HintPath>$(HollowKnightFolder)\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="MagicUI, Version=1.0.8060.11819, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\Dependancies\MagicUI.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\Mods\Dependancies\MagicUI.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.11.3.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
       <HintPath>$(HollowKnightFolder)\Mono.Cecil.dll</HintPath>
@@ -67,7 +67,7 @@
       <HintPath>$(HollowKnightFolder)\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Hollow Knight 1.4 Modded\hollow_knight_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>$(HollowKnightFolder)\Managed\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.UIModule.dll</HintPath>
