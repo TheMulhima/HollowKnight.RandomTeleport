@@ -156,29 +156,37 @@ namespace RandomTeleport
         //gets all hazard respawn gos and transtion gate gos
         private static Vector3? GetPos(string SceneName)
         {
-            if (SpecialCases.Keys.Contains(SceneName))
+            if (!RandomTeleport.settings.OnlySpawnInTransitions)
             {
-                //do a call on RNG to make sure GetPos always calls Next once each scene load
-                _ = RandomTeleport.saveSettings.RNG.Next();
-                return SpecialCases[SceneName];
+                if (SpecialCases.Keys.Contains(SceneName))
+                {
+                    //do a call on RNG to make sure GetPos always calls Next once each scene load
+                    _ = RandomTeleport.saveSettings.RNG.Next();
+                    return SpecialCases[SceneName];
+                }
+                List<GameObject> AllpossibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToList();
+
+                if (AllpossibleSpawnLocations.Count == 0) return null; //99% sure not gonna happen
+
+                List<GameObject> HazardRespawnLoacations = AllpossibleSpawnLocations.Where(go => go.GetPath().Contains("Hazard Respawn Trigger")).ToList();
+                if (HazardRespawnLoacations.Count > 0)
+                {
+                    return HeroController.instance.FindGroundPoint(HazardRespawnLoacations[RandomTeleport.saveSettings.RNG.Next(0, HazardRespawnLoacations.Count)].transform.position, true);
+                }
+
+                List<GameObject> DoorRespawns = AllpossibleSpawnLocations.Where(go => go.transform.parent != null && go.transform.parent.name.Contains("door")).ToList();
+                if (DoorRespawns.Count > 0)
+                {
+                    return HeroController.instance.FindGroundPoint(DoorRespawns[RandomTeleport.saveSettings.RNG.Next(0, DoorRespawns.Count)].transform.position, true);
+                }
+                
+                return HeroController.instance.FindGroundPoint(AllpossibleSpawnLocations[RandomTeleport.saveSettings.RNG.Next(0, AllpossibleSpawnLocations.Count)].transform.position, true);
             }
-            List<GameObject> AllpossibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToList();
-
-            if (AllpossibleSpawnLocations.Count == 0) return null; //99% sure not gonna happen
-
-            List<GameObject> HazardRespawnLoacations = AllpossibleSpawnLocations.Where(go => go.GetPath().Contains("Hazard Respawn Trigger")).ToList();
-            if (HazardRespawnLoacations.Count > 0)
+            else
             {
-                return HeroController.instance.FindGroundPoint(HazardRespawnLoacations[RandomTeleport.saveSettings.RNG.Next(0, HazardRespawnLoacations.Count)].transform.position, true);
+                List<GameObject> TransitionPoints = Resources.FindObjectsOfTypeAll<TransitionPoint>().Select(tp => tp.gameObject).ToList();
+                return HeroController.instance.FindGroundPoint(TransitionPoints[RandomTeleport.saveSettings.RNG.Next(0, TransitionPoints.Count)].transform.position, true);
             }
-
-            List<GameObject> DoorRespawns = AllpossibleSpawnLocations.Where(go => go.transform.parent != null && go.transform.parent.name.Contains("door")).ToList();
-            if (DoorRespawns.Count > 0)
-            {
-                return HeroController.instance.FindGroundPoint(DoorRespawns[RandomTeleport.saveSettings.RNG.Next(0, DoorRespawns.Count)].transform.position, true);
-            }
-            
-            return HeroController.instance.FindGroundPoint(AllpossibleSpawnLocations[RandomTeleport.saveSettings.RNG.Next(0, AllpossibleSpawnLocations.Count)].transform.position, true);
         }
     }
 }

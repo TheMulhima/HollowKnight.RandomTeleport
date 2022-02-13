@@ -188,6 +188,12 @@ namespace RandomTeleport
                     s => RandomTeleport.settings.AllowTHK = s == 0,
                     () => RandomTeleport.settings.AllowTHK ? 0 : 1),
                 
+                new HorizontalOption("Only Spawn in Transitions",
+                    "",
+                    new [] { "Yes", "No" },
+                    s => RandomTeleport.settings.OnlySpawnInTransitions = s == 0,
+                    () => RandomTeleport.settings.OnlySpawnInTransitions ? 0 : 1),
+                
                 new MenuButton("Reset Timer",
                     ResetTimerDescription,
                     _ => RandomTeleport.Instance.ResetTimer(),

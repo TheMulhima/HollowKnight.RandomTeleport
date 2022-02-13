@@ -3,7 +3,7 @@
     <ProjectGuid>{330F261C-3700-41B5-8770-3542243DD26A}</ProjectGuid>
     <RootNamespace>RandomTeleport</RootNamespace>
     <AssemblyTitle>RandomTeleport</AssemblyTitle>
-    <AssemblyVersion>0.0.4.0</AssemblyVersion>
+    <AssemblyVersion>0.0.5.0</AssemblyVersion>
     <Deterministic>true</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>
@@ -88,6 +88,11 @@
     <Reference Include="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
       <HintPath>$(HollowKnightFolder)\mscorlib.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\README.md">
+      <Link>README.md</Link>
+    </Content>
   </ItemGroup>
 
   <Target Name="CopyMod" AfterTargets="PostBuildEvent">

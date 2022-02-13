@@ -40,4 +40,6 @@ These can be accessed by clicking the extra settings button at the end of the mo
   * `AllowGodHomeBosses`: Choose whether to include godhome bosses in the pool. Note: it will cause softlock if you die/kill the boss so using the keybind is required to exit (defualt: false)
   * `AllowTHK`: Choose whether to include THK in the pool. its defaulted to false because allowing a chance to end game early kinda boring.
   * `Reset Timer`: Resets timer back to max value.
-Note: Any dream scenes cant be teleported to ever with exception of godhome scenes.
+  * `Only Spawn in Transitions`: Only makes you randomly teleport to transitions and not hazard respawns
+
+Note: Any dream scenes cant be teleported to ever with exception of godhome scenes.  

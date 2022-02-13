@@ -40,6 +40,7 @@ namespace RandomTeleport
         public bool onlyVisitedScenes = false;
         public bool AllowGodHomeBosses = false;
         public bool AllowTHK = false;
+        public bool OnlySpawnInTransitions;
 
         [JsonConverter(typeof(PlayerActionSetConverter))]
         public KeyBinds keybinds = new KeyBinds();
