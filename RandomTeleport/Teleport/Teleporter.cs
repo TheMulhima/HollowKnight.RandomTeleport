@@ -129,7 +129,8 @@ namespace RandomTeleport
                 PreviousScene = currentScene;
                 PreviousPos = HeroPos.Value;
                 //TODO: copy full code for left and right transitions in HC.EnterScene
-
+                
+                GameCameras.instance.StopCameraShake();
                 RandomTeleport.Instance.Log($"Loading Scene:({availableTeleportScenes.IndexOf(scene)}) {scene} at {HeroPos.GetValueOrDefault()}");
                 
             }
