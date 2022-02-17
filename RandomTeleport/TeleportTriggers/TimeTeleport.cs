@@ -71,7 +71,7 @@ namespace RandomTeleport.TeleportTriggers
         {
             if (damageAmount > 0)
             {
-                timer -= RandomTeleport.settings.timeLostFromHit;
+                timer += RandomTeleport.settings.timeLostFromHit;
             }
             
             return damageAmount;
