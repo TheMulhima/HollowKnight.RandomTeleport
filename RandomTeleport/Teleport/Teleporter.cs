@@ -24,9 +24,10 @@ namespace RandomTeleport
         private static FastReflectionDelegate HCFinishedEnteringScene = typeof(HeroController)
             .GetMethod("FinishedEnteringScene", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
             .GetFastDelegate();
+
         internal static IEnumerator TeleportCoro(bool GoToprevious = false)
         {
-            bool isTeleported = false;
+             bool isTeleported = false;
             List<string> availableTeleportScenes = new List<string>();
 
             try
@@ -128,7 +129,6 @@ namespace RandomTeleport
                 isTeleported = true;
                 PreviousScene = currentScene;
                 PreviousPos = HeroPos.Value;
-                //TODO: copy full code for left and right transitions in HC.EnterScene
                 
                 GameCameras.instance.StopCameraShake();
                 RandomTeleport.Instance.Log($"Loading Scene:({availableTeleportScenes.IndexOf(scene)}) {scene} at {HeroPos.GetValueOrDefault()}");
@@ -165,74 +165,38 @@ namespace RandomTeleport
             
             if (RandomTeleport.settings.OnlySpawnInTransitions)
             {
-                List<GameObject> RespawnPoints = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToList();
-                List<TransitionPoint> AllTransitionPoints = new List<TransitionPoint>();
-                foreach (var respawn in RespawnPoints)
-                {
-                    var transitionPoint = respawn.GetComponentInParent(typeof(TransitionPoint));
-                    if (transitionPoint != null)
-                    {
-                        AllTransitionPoints.Add(transitionPoint as TransitionPoint);
-                    }
-                }
-                
-                TransitionPoint randomTransitionPoint = AllTransitionPoints[RandomTeleport.saveSettings.RNG.Next(0, AllTransitionPoints.Count)];
+                //look for HazardRespawnMarker gos whose parent has a TransitionPoint component.
+                //This is because we need the HazardRespawnMarker position to teleport to and not the transition point location
+                // but we also only want transitions
+            
+                List<GameObject> RespawnPoints = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null)
+                    .Where(respawngo => respawngo.GetComponentInParent(typeof(TransitionPoint))).ToList();
 
-                var position = randomTransitionPoint.transform.position;
-                var offset = randomTransitionPoint.entryOffset;
-                switch (randomTransitionPoint.GetGatePosition())
-                {
-                    case GatePosition.top:
-                        
-                        RandomTeleport.Instance.LogDebug("Top");
-                        return new Vector2(position.x + offset.x,position.y + offset.y);
-                    
-                    case GatePosition.bottom:
-                        
-                        RandomTeleport.Instance.LogDebug("bottom");
-                        if (randomTransitionPoint.alwaysEnterRight) HeroController.instance.FaceRight();
-                        if (randomTransitionPoint.alwaysEnterLeft) HeroController.instance.FaceLeft();
-                        ReflectionHelper.SetField(HeroController.instance, "transition_vel", !HeroController.instance.cState.facingRight ? new Vector2(-HeroController.instance.SPEED_TO_ENTER_SCENE_HOR, HeroController.instance.SPEED_TO_ENTER_SCENE_UP) : new Vector2(HeroController.instance.SPEED_TO_ENTER_SCENE_HOR, HeroController.instance.SPEED_TO_ENTER_SCENE_UP));
-                        return new Vector2(position.x + offset.x, position.y + offset.y + 3.0f);
-                    
-                    case GatePosition.left:
-                    
-                        RandomTeleport.Instance.LogDebug("left");
-                        HeroController.instance.FaceLeft();
-                        ReflectionHelper.SetField(HeroController.instance, "transition_vel", new Vector2(HeroController.instance.RUN_SPEED, 0f));
-                        return new Vector2(position.x + offset.x -2f, HeroController.instance.FindGroundPoint(new Vector2(position.x + offset.x + 2f, position.y)).y + 1f);
-                    
-                    case GatePosition.right:
-                    
-                        RandomTeleport.Instance.LogDebug("right");
-                        HeroController.instance.FaceRight();
-                        ReflectionHelper.SetField(HeroController.instance, "transition_vel", new Vector2(-HeroController.instance.RUN_SPEED, 0f));
-                        return new Vector2(position.x + offset.x + 2f,
-                        HeroController.instance.FindGroundPoint(new Vector2(position.x + offset.x - 2f, position.y)).y + 1f);
-                    
-                    case GatePosition.door:
-                    
-                        RandomTeleport.Instance.LogDebug("door");
-                        return HeroController.instance.FindGroundPoint(position);
-                }
-                
+                return HeroController.instance.FindGroundPoint(RespawnPoints[RandomTeleport.saveSettings.RNG.Next(0, RespawnPoints.Count)].transform.position, true);
+
             }
+            
+            //Find all gos with respawn tag. Finds all gos with component HazardRespawnMarker. Includes normal hazard respawns and transitions
             List<GameObject> AllpossibleSpawnLocations = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null).ToList();
 
             if (AllpossibleSpawnLocations.Count == 0) return null; //99% sure not gonna happen
 
+            //Get the gos that are actually only hazard respawns (not transitions). does this by seeing parent name
+            //This is prioritized because it seems more interesting to be spawned middle of the room (also because some transitions break)
             List<GameObject> HazardRespawnLoacations = AllpossibleSpawnLocations.Where(go => go.GetPath().Contains("Hazard Respawn Trigger")).ToList();
             if (HazardRespawnLoacations.Count > 0)
             {
                 return HeroController.instance.FindGroundPoint(HazardRespawnLoacations[RandomTeleport.saveSettings.RNG.Next(0, HazardRespawnLoacations.Count)].transform.position, true);
             }
 
+            //door transitions also count as middle of the room so i prioritized this too
             List<GameObject> DoorRespawns = AllpossibleSpawnLocations.Where(go => go.transform.parent != null && go.transform.parent.name.Contains("door")).ToList();
             if (DoorRespawns.Count > 0)
             {
                 return HeroController.instance.FindGroundPoint(DoorRespawns[RandomTeleport.saveSettings.RNG.Next(0, DoorRespawns.Count)].transform.position, true);
             }
             
+            //if room neither has door or hazard respawns, just teleport to any hazardRespawnMarker. Most likely the transition
             return HeroController.instance.FindGroundPoint(AllpossibleSpawnLocations[RandomTeleport.saveSettings.RNG.Next(0, AllpossibleSpawnLocations.Count)].transform.position, true);
         }
     }
