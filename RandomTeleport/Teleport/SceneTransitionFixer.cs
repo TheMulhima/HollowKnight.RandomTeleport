@@ -1,4 +1,5 @@
-﻿using Modding;
+﻿using HKMirror;
+using Modding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Satchel;
@@ -39,9 +40,9 @@ namespace RandomTeleport
                     // Opens floor to void heart (bypasses subsequent checks for kingsoul to be equipped)
                     if (GameManager.instance.entryGateName.StartsWith("b"))
                     {
-                        PlayerData.instance.SetBool("openedBlackEggPath", true);
+                        PlayerDataAccess.openedBlackEggPath =true;
                     }
-                    if (PlayerData.instance.openedBlackEggPath)
+                    if (PlayerDataAccess.openedBlackEggPath)
                     {
                         Object.Destroy(newScene.GetGameObjectByName("floor_closed"));
                     }
@@ -70,7 +71,7 @@ namespace RandomTeleport
                     // appears; this can lead to a hard lock if the player interacts with Cornifer and then the popup appears during the interaction.
                     if (!GameManager.instance.entryGateName.StartsWith("left"))
                     {
-                        PlayerData.instance.SetBool(nameof(PlayerData.visitedOutskirts), true);
+                        PlayerDataAccess.visitedOutskirts = true;
                     }
                     break;
                 case "Fungus2_15":
@@ -232,7 +233,7 @@ namespace RandomTeleport
                 case "Abyss_01":
                     if (entryGateName.StartsWith("left1"))
                     {
-                        PlayerData.instance.SetBool("dungDefenderWallBroken", true);
+                        PlayerDataAccess.dungDefenderWallBroken = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
@@ -300,10 +301,10 @@ namespace RandomTeleport
                     }
                     break;
                 case "Crossroads_04":
-                    PlayerData.instance.menderState = 2;
-                    PlayerData.instance.menderDoorOpened = true;
-                    PlayerData.instance.hasMenderKey = true;
-                    PlayerData.instance.menderSignBroken = true;
+                    PlayerDataAccess.menderState = 2;
+                    PlayerDataAccess.menderDoorOpened = true;
+                    PlayerDataAccess.hasMenderKey = true;
+                    PlayerDataAccess.menderSignBroken = true;
                     if (entryGateName.StartsWith("d"))
                     {
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
@@ -326,7 +327,7 @@ namespace RandomTeleport
                     // Opens gate in room after False Knight
                     if (entryGateName.StartsWith("l"))
                     {
-                        PlayerData.instance.SetBool("shamanPillar", true);
+                        PlayerDataAccess.shamanPillar = true;
                     }
                     break;
                 case "Crossroads_07":
@@ -363,7 +364,7 @@ namespace RandomTeleport
                             activated = true,
                             semiPersistent = false
                         });
-                        PlayerData.instance.SetBool("crossroadsMawlekWall", true);
+                        PlayerDataAccess.crossroadsMawlekWall = true;
                     }
                     break;
                 case "Crossroads_21":
@@ -403,12 +404,12 @@ namespace RandomTeleport
                             activated = true,
                             semiPersistent = false
                         });
-                        PlayerData.instance.SetBool("crossroadsMawlekWall", true);
+                        PlayerDataAccess.crossroadsMawlekWall = true;
                     }
                     // Opens gate in room after False Knight
                     if (entryGateName.StartsWith("right1"))
                     {
-                        PlayerData.instance.SetBool("shamanPillar", true);
+                        PlayerDataAccess.shamanPillar = true;
                     }
                     break;
                 case "Deepnest_01":
@@ -516,7 +517,7 @@ namespace RandomTeleport
                 case "Deepnest_East_02":
                     if (entryGateName.StartsWith("r"))
                     {
-                        PlayerData.instance.SetBool("outskirtsWall", true);
+                        PlayerDataAccess.outskirtsWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_East_02",
@@ -529,7 +530,7 @@ namespace RandomTeleport
                 case "Deepnest_East_03":
                     if (entryGateName.StartsWith("left2"))
                     {
-                        PlayerData.instance.SetBool("outskirtsWall", true);
+                        PlayerDataAccess.outskirtsWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Deepnest_East_02",
@@ -573,7 +574,7 @@ namespace RandomTeleport
                 case "Fungus3_02":
                     if (entryGateName.StartsWith("right1"))
                     {
-                        PlayerData.instance.SetBool("oneWayArchive", true);
+                        PlayerDataAccess.oneWayArchive = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_47",
@@ -586,7 +587,7 @@ namespace RandomTeleport
                 case "Fungus3_13":
                     if (entryGateName.StartsWith("left2"))
                     {
-                        PlayerData.instance.SetBool("openedGardensStagStation", true);
+                        PlayerDataAccess.openedGardensStagStation = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_40",
@@ -599,7 +600,7 @@ namespace RandomTeleport
                 case "Fungus3_40":
                     if (entryGateName.StartsWith("r"))
                     {
-                        PlayerData.instance.SetBool("openedGardensStagStation", true);
+                        PlayerDataAccess.openedGardensStagStation = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_40",
@@ -621,7 +622,7 @@ namespace RandomTeleport
                 case "Fungus3_47":
                     if (entryGateName.StartsWith("l"))
                     {
-                        PlayerData.instance.SetBool("oneWayArchive", true);
+                        PlayerDataAccess.oneWayArchive = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Fungus3_47",
@@ -635,7 +636,7 @@ namespace RandomTeleport
                     // breakable wall leading to Deep Focus
                     if (entryGateName.StartsWith("left2"))
                     {
-                        PlayerData.instance.SetBool("brokeMinersWall", true);
+                        PlayerDataAccess.brokeMinersWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Mines_05",
@@ -648,7 +649,7 @@ namespace RandomTeleport
                 case "RestingGrounds_02":
                     if (entryGateName.StartsWith("b"))
                     {
-                        PlayerData.instance.SetBool("openedRestingGrounds02", true);
+                        PlayerDataAccess.openedRestingGrounds02 = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_06",
@@ -668,8 +669,8 @@ namespace RandomTeleport
                 case "RestingGrounds_05":
                     if (entryGateName.StartsWith("right1"))
                     {
-                        PlayerData.instance.SetBool("gladeDoorOpened", true);
-                        PlayerData.instance.SetBool("dreamReward2", true);
+                        PlayerDataAccess.gladeDoorOpened = true;
+                        PlayerDataAccess.dreamReward2 = true;
                     }
                     if (entryGateName.StartsWith("b"))
                     {
@@ -685,7 +686,7 @@ namespace RandomTeleport
                 case "RestingGrounds_06":
                     if (entryGateName.StartsWith("t"))
                     {
-                        PlayerData.instance.SetBool("openedRestingGrounds02", true);
+                        PlayerDataAccess.openedRestingGrounds02 = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_06",
@@ -705,7 +706,7 @@ namespace RandomTeleport
                 case "RestingGrounds_10":
                     if (entryGateName.StartsWith("l"))
                     {
-                        PlayerData.instance.SetBool("restingGroundsCryptWall", true);
+                        PlayerDataAccess.restingGroundsCryptWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_10",
@@ -735,21 +736,21 @@ namespace RandomTeleport
                 case "Room_Town_Stag_Station":
                     if (entryGateName.StartsWith("left1"))
                     {
-                        PlayerData.instance.SetBool("openedTownBuilding", true);
-                        PlayerData.instance.SetBool("openedTown", true);
+                        PlayerDataAccess.openedTownBuilding = true;
+                        PlayerDataAccess.openedTown = true;
                     }
                     break;
                 case "Ruins1_05b":
                     if (entryGateName.StartsWith("b"))
                     {
-                        PlayerData.instance.SetBool("openedWaterwaysManhole", true);
+                        PlayerDataAccess.openedWaterwaysManhole = true;
                     }
                     break;
                 case "Ruins1_23":
                     if (entryGateName.StartsWith("t"))
                     {
-                        PlayerData.instance.SetBool("brokenMageWindow", true);
-                        PlayerData.instance.SetBool("brokenMageWindowGlass", true);
+                        PlayerDataAccess.brokenMageWindow = true;
+                        PlayerDataAccess.brokenMageWindowGlass = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_30",
@@ -774,8 +775,8 @@ namespace RandomTeleport
                 case "Ruins1_30":
                     if (entryGateName.StartsWith("b"))
                     {
-                        PlayerData.instance.SetBool("brokenMageWindow", true);
-                        PlayerData.instance.SetBool("brokenMageWindowGlass", true);
+                        PlayerDataAccess.brokenMageWindow = true;
+                        PlayerDataAccess.brokenMageWindowGlass = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins1_30",
@@ -788,7 +789,7 @@ namespace RandomTeleport
                 case "Ruins1_31":
                     if (entryGateName.StartsWith("left3"))
                     {
-                        PlayerData.instance.SetBool("openedMageDoor_v2", true);
+                        PlayerDataAccess.openedMageDoor_v2 = true;
                     }
                     if (entryGateName.StartsWith("left2"))
                     {
@@ -828,7 +829,7 @@ namespace RandomTeleport
                 case "Ruins2_04":
                     if (entryGateName.StartsWith("door_Ruin_House_03"))
                     {
-                        PlayerData.instance.SetBool("city2_sewerDoor", true);
+                        PlayerDataAccess.city2_sewerDoor = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_House_03",
@@ -839,13 +840,13 @@ namespace RandomTeleport
                     }
                     else if (entryGateName.StartsWith("door_Ruin_Elevator"))
                     {
-                        PlayerData.instance.SetBool("bathHouseOpened", true);
+                        PlayerDataAccess.bathHouseOpened = true;
                     }
                     break;
                 case "Ruins2_10":
                     if (entryGateName.StartsWith("r"))
                     {
-                        PlayerData.instance.SetBool("restingGroundsCryptWall", true);
+                        PlayerDataAccess.restingGroundsCryptWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "RestingGrounds_10",
@@ -858,7 +859,7 @@ namespace RandomTeleport
                 case "Ruins2_10b":
                     if (entryGateName.StartsWith("l"))
                     {
-                        PlayerData.instance.SetBool("bathHouseWall", true);
+                        PlayerDataAccess.bathHouseWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_Bathhouse",
@@ -871,13 +872,13 @@ namespace RandomTeleport
                 case "Ruins2_11_b":
                     if (entryGateName.StartsWith("l"))
                     {
-                        PlayerData.instance.SetBool("openedLoveDoor", true);
+                        PlayerDataAccess.openedLoveDoor = true;
                     }
                     break;
                 case "Ruins_House_03":
                     if (entryGateName.StartsWith("left1"))
                     {
-                        PlayerData.instance.SetBool("city2_sewerDoor", true);
+                        PlayerDataAccess.city2_sewerDoor = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_House_03",
@@ -890,7 +891,7 @@ namespace RandomTeleport
                 case "Ruins_Bathhouse":
                     if (entryGateName.StartsWith("r"))
                     {
-                        PlayerData.instance.SetBool("bathHouseWall", true);
+                        PlayerDataAccess.bathHouseWall = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Ruins_Bathhouse",
@@ -904,27 +905,27 @@ namespace RandomTeleport
                     switch (entryGateName)
                     {
                         case "door_sly":
-                            PlayerData.instance.SetBool("slyRescued", true);
-                            PlayerData.instance.SetBool("openedSlyShop", true);
+                            PlayerDataAccess.slyRescued = true;
+                            PlayerDataAccess.openedSlyShop = true;
                             break;
                         case "door_station":
-                            PlayerData.instance.SetBool("openedTownBuilding", true);
-                            PlayerData.instance.SetBool("openedTown", true);
+                            PlayerDataAccess.openedTownBuilding = true;
+                            PlayerDataAccess.openedTown = true;
                             break;
                         case "door_mapper":
-                            PlayerData.instance.SetBool("openedMapperShop", true);
+                            PlayerDataAccess.openedMapperShop = true;
                             break;
                         case "door_bretta":
-                            PlayerData.instance.SetBool("brettaRescued", true);
+                            PlayerDataAccess.brettaRescued = true;
                             break;
                         case "door_jiji":
-                            PlayerData.instance.SetBool("jijiDoorUnlocked", true);
+                            PlayerDataAccess.jijiDoorUnlocked = true;
                             break;
                         case "room_grimm":
-                            PlayerData.instance.SetBool(nameof(PlayerData.troupeInTown), true);
+                            PlayerDataAccess.troupeInTown = true;
                             break;
                         case "room_divine":
-                            PlayerData.instance.SetBool(nameof(PlayerData.divineInTown), true);
+                            PlayerDataAccess.divineInTown = true;
                             break;
                     }
                     if (entryGateName != "left1")
@@ -941,7 +942,7 @@ namespace RandomTeleport
                 case "Waterways_01":
                     if (entryGateName.StartsWith("t"))
                     {
-                        PlayerData.instance.SetBool("openedWaterwaysManhole", true);
+                        PlayerDataAccess.openedWaterwaysManhole = true;
                     }
                     if (entryGateName.StartsWith("r"))
                     {
@@ -981,7 +982,7 @@ namespace RandomTeleport
                 case "Waterways_05":
                     if (entryGateName.StartsWith("r"))
                     {
-                        PlayerData.instance.SetBool("dungDefenderWallBroken", true);
+                        PlayerDataAccess.dungDefenderWallBroken = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
@@ -1004,7 +1005,7 @@ namespace RandomTeleport
                 case "Waterways_07":
                     if (entryGateName.StartsWith("right1"))
                     {
-                        PlayerData.instance.SetBool("waterwaysAcidDrained", true);
+                        PlayerDataAccess.waterwaysAcidDrained = true;
                         RandomTeleport.SavePersistentBoolItemState(new PersistentBoolData
                         {
                             sceneName = "Waterways_05",
@@ -1029,17 +1030,17 @@ namespace RandomTeleport
                 case "Waterways_09":
                     if (entryGateName.StartsWith("left"))
                     {
-                        PlayerData.instance.SetBool("waterwaysGate", true);
+                        PlayerDataAccess.waterwaysGate = true;
                     }
                     break;
                 case "White_Palace_13":
-                    PlayerData.instance.SetBool(nameof(PlayerData.whitePalaceSecretRoomVisited), true);
+                    PlayerDataAccess.whitePalaceSecretRoomVisited = true;
                     break;
                 case "GG_Atrium":
                     if (entryGateName == "door1_blueRoom")
                     {
-                        PlayerData.instance.SetBool(nameof(PlayerData.blueRoomDoorUnlocked), true);
-                        PlayerData.instance.SetBool(nameof(PlayerData.blueRoomActivated), true);
+                        PlayerDataAccess.blueRoomDoorUnlocked = true;
+                        PlayerDataAccess.blueRoomActivated = true;
                     }
                     break;
             }

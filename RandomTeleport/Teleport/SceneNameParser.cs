@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using HKMirror;
 using UnityEngine.SceneManagement;
 
 namespace RandomTeleport
@@ -115,7 +116,7 @@ namespace RandomTeleport
             
             if (RandomTeleport.settings.onlyVisitedScenes)
             {
-                availableTeleportScenes = availableTeleportScenes.Where(scene => PlayerData.instance.scenesVisited.Contains(scene)).ToList();
+                availableTeleportScenes = availableTeleportScenes.Where(scene => PlayerDataAccess.scenesVisited.Contains(scene)).ToList();
             }
 
             if (RandomTeleport.settings.sameAreaTeleport)

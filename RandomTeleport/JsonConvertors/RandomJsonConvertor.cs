@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing;
 using System.Linq;
 using System.Text;
+using HKMirror;
+using HKMirror.InstanceClasses;
 using Modding;
 using Newtonsoft.Json;
 
@@ -12,25 +14,22 @@ namespace RandomTeleport.Utils
     {
         public override void WriteJson(JsonWriter writer, Random value, JsonSerializer serializer)
         {
+            RandomR random = value.Reflect();
             writer.WriteStartObject();
             
             /* System.Random has 3 const int we dont care about to serialize because it is const
              * the 3 fields we do care about is inext (int), inextp(int), SeedArray(int[])
              * so we get these and write them in the json. */
             
-            //we use reflection because fields are private
-            int inext = ReflectionHelper.GetField<Random, int>(value, "inext");
-            writer.WritePropertyName("inext");
-            writer.WriteValue(inext);
+            writer.WritePropertyName(nameof(random.inext));
+            writer.WriteValue(random.inext);
 
-            int inextp = ReflectionHelper.GetField<Random, int>(value, "inextp");
-            writer.WritePropertyName("inextp");
-            writer.WriteValue(inextp);
-            
-            int[] SeedArray = ReflectionHelper.GetField<Random, int[]>(value, "SeedArray");
-            writer.WritePropertyName("SeedArray");
+            writer.WritePropertyName(nameof(random.inextp));
+            writer.WriteValue(random.inextp);
+
+            writer.WritePropertyName(nameof(random.SeedArray));
             writer.WriteStartArray();
-            SeedArray.ToList().ForEach(writer.WriteValue);
+            random.SeedArray.ToList().ForEach(writer.WriteValue);
             writer.WriteEndArray();
             
             writer.WriteEndObject();
@@ -38,13 +37,15 @@ namespace RandomTeleport.Utils
 
         public override Random ReadJson(JsonReader reader, Type objectType, Random existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
+            RandomR random = new System.Random().Reflect();
+            
             reader.Read(); //property name
             reader.Read(); //inext value
-            int inext = Convert.ToInt32(reader.Value);
+            random.inext = Convert.ToInt32(reader.Value);
             
             reader.Read(); //property name
             reader.Read(); //inextp value
-            int inextp = Convert.ToInt32(reader.Value);
+            random.inextp = Convert.ToInt32(reader.Value);
 
             reader.Read(); //property name
             reader.Read(); //Writer.WriteStartArray() token
@@ -58,15 +59,9 @@ namespace RandomTeleport.Utils
                 SeedArrayList.Add(Convert.ToInt32(reader.Value));
             }
 
-            int[] SeedArray = SeedArrayList.ToArray();
+            random.SeedArray = SeedArrayList.ToArray();
 
-            //create new random object and use reflection to set the private fields
-            System.Random random = new System.Random();
-            ReflectionHelper.SetField(random, "inext", inext);
-            ReflectionHelper.SetField(random, "inextp", inextp);
-            ReflectionHelper.SetField(random, "SeedArray", SeedArray);
-
-            return random;
+            return random.orig;
         }
     }
 }

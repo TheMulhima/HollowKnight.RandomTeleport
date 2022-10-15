@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using GlobalEnums;
+using HKMirror;
 using HutongGames.PlayMaker.Actions;
 using MonoMod.Utils;
 using Satchel;
@@ -16,14 +17,6 @@ namespace RandomTeleport
     {
         public static string PreviousScene;
         public static Vector3 PreviousPos;
-        
-        private static FastReflectionDelegate HCResetMotion = typeof(HeroController)
-            .GetMethod("ResetMotion", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
-            .GetFastDelegate(); 
-        
-        private static FastReflectionDelegate HCFinishedEnteringScene = typeof(HeroController)
-            .GetMethod("FinishedEnteringScene", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
-            .GetFastDelegate();
 
         internal static IEnumerator TeleportCoro(bool GoToprevious = false)
         {
@@ -69,13 +62,13 @@ namespace RandomTeleport
                     scene = availableTeleportScenes[availableTeleportScenes.IndexOf(scene) + 1];
                 }
 
-                HeroController.instance.IgnoreInputWithoutReset();
+                HeroControllerR.IgnoreInputWithoutReset();
 
-                HeroController.instance.CancelSuperDash();
-                HCResetMotion(HeroController.instance, null);
-                ReflectionHelper.SetField(HeroController.instance, "airDashed", false);
-                ReflectionHelper.SetField(HeroController.instance, "doubleJumped", false);
-                HeroController.instance.AffectedByGravity(false);
+                HeroControllerR.CancelSuperDash();
+                HeroControllerR.ResetMotion();
+                HeroControllerR.airDashed = false;
+                HeroControllerR.doubleJumped = false;
+                HeroControllerR.AffectedByGravity(false);
                 
                 
                 //yes this is a savestate load
@@ -96,7 +89,7 @@ namespace RandomTeleport
                     }
                 );
 
-                ReflectionHelper.SetField(GameManager.instance.cameraCtrl, "isGameplayScene", true);
+                GameManager.instance.cameraCtrl.Reflect().isGameplayScene = true;
 
                 GameManager.instance.cameraCtrl.PositionToHero(false);
 
@@ -104,26 +97,26 @@ namespace RandomTeleport
 
                 GameManager.instance.cameraCtrl.FadeSceneIn();
 
-                HeroController.instance.TakeMP(1);
-                HeroController.instance.AddMPChargeSpa(1);
-                HeroController.instance.TakeHealth(1);
-                HeroController.instance.AddHealth(1);
+                HeroControllerR.TakeMP(1);
+                HeroControllerR.AddMPChargeSpa(1);
+                HeroControllerR.TakeHealth(1);
+                HeroControllerR.AddHealth(1);
 
                 GameCameras.instance.hudCanvas.gameObject.SetActive(true);
 
-                ReflectionHelper.SetField(GameManager.instance.cameraCtrl, "isGameplayScene", true);
+                GameManager.instance.cameraCtrl.Reflect().isGameplayScene = true;
 
                 yield return null;
 
                 Vector3? HeroPos = GoToprevious ? PreviousPos : GetPos(scene);
 
                 if (!HeroPos.HasValue) continue;
-                HeroController.instance.transform.position = HeroPos.Value;
+                HeroControllerR.transform.position = HeroPos.Value;
 
-                HeroController.instance.cState.inConveyorZone = false;
-                HeroController.instance.cState.onConveyor = false;
-                HeroController.instance.cState.onConveyorV = false;
-                HCFinishedEnteringScene(HeroController.instance, true, false);
+                HeroControllerR.cState.inConveyorZone = false;
+                HeroControllerR.cState.onConveyor = false;
+                HeroControllerR.cState.onConveyorV = false;
+                HeroControllerR.FinishedEnteringScene(true, false);
                 yield return null;
 
                 isTeleported = true;
@@ -172,7 +165,7 @@ namespace RandomTeleport
                 List<GameObject> RespawnPoints = GameObject.FindGameObjectsWithTag("Respawn").Where(go => go != null)
                     .Where(respawngo => respawngo.GetComponentInParent(typeof(TransitionPoint))).ToList();
 
-                return HeroController.instance.FindGroundPoint(RespawnPoints[RandomTeleport.saveSettings.RNG.Next(0, RespawnPoints.Count)].transform.position, true);
+                return HeroControllerR.FindGroundPoint(RespawnPoints[RandomTeleport.saveSettings.RNG.Next(0, RespawnPoints.Count)].transform.position, true);
 
             }
             
@@ -186,18 +179,18 @@ namespace RandomTeleport
             List<GameObject> HazardRespawnLoacations = AllpossibleSpawnLocations.Where(go => go.GetPath().Contains("Hazard Respawn Trigger")).ToList();
             if (HazardRespawnLoacations.Count > 0)
             {
-                return HeroController.instance.FindGroundPoint(HazardRespawnLoacations[RandomTeleport.saveSettings.RNG.Next(0, HazardRespawnLoacations.Count)].transform.position, true);
+                return HeroControllerR.FindGroundPoint(HazardRespawnLoacations[RandomTeleport.saveSettings.RNG.Next(0, HazardRespawnLoacations.Count)].transform.position, true);
             }
 
             //door transitions also count as middle of the room so i prioritized this too
             List<GameObject> DoorRespawns = AllpossibleSpawnLocations.Where(go => go.transform.parent != null && go.transform.parent.name.Contains("door")).ToList();
             if (DoorRespawns.Count > 0)
             {
-                return HeroController.instance.FindGroundPoint(DoorRespawns[RandomTeleport.saveSettings.RNG.Next(0, DoorRespawns.Count)].transform.position, true);
+                return HeroControllerR.FindGroundPoint(DoorRespawns[RandomTeleport.saveSettings.RNG.Next(0, DoorRespawns.Count)].transform.position, true);
             }
             
             //if room neither has door or hazard respawns, just teleport to any hazardRespawnMarker. Most likely the transition
-            return HeroController.instance.FindGroundPoint(AllpossibleSpawnLocations[RandomTeleport.saveSettings.RNG.Next(0, AllpossibleSpawnLocations.Count)].transform.position, true);
+            return HeroControllerR.FindGroundPoint(AllpossibleSpawnLocations[RandomTeleport.saveSettings.RNG.Next(0, AllpossibleSpawnLocations.Count)].transform.position, true);
         }
     }
 }

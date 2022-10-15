@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using HKMirror;
 using MagicUI.Core;
 using MagicUI.Elements;
 using UnityEngine;
@@ -192,7 +193,7 @@ namespace RandomTeleport.TeleportTriggers
                     && nextScene != sceneName
                 )
                 || GameManager.instance.IsNonGameplayScene()
-                || PlayerData.instance.atBench
+                || PlayerDataAccess.atBench
                 || CurrentAnimationisNonTeleportAnim(); //to not punish people changing charms and stuff
 
 
