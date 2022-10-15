@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Modding;
 using Satchel.BetterMenus;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using MenuButton = Satchel.BetterMenus.MenuButton;
@@ -26,6 +28,16 @@ namespace RandomTeleport
         private static readonly List<string> TriggerOptionIds = new List<string>()
         {
             "timeTrigger", "damageTrigger", "keyPressTrigger"
+        };
+        
+        private static readonly string[] TimeOptions = new string[]
+        {
+            "30s", "1m", "1m 30s", "2m", "3m", "5m", "10m", "Custom"
+        };
+        
+        private static readonly string[] TimeReductionOptions = new string[]
+        {
+            "5s", "10s", "30s", "1m", "2m", "5m"
         };
 
         private static string GetTimeTriggerDesc => $"If Enabled you will be randomly teleported every {RandomTeleport.settings.teleportTime}";
@@ -92,32 +104,120 @@ namespace RandomTeleport
                    {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time]},
 
                new HorizontalOption("Random Teleport Time",
-                    "Time between teleports in minutes",
+                    "Time between teleports.",
                     //generate list from 20 to 900 with 20 step increments
-                    Enumerable.Range(1, 45).Select(x => (x * 20).ToString()).ToArray(),
+                    TimeOptions,
                     s =>
                     {
-                        RandomTeleport.settings.teleportTime = (s + 1) * 20;
+                        RandomTeleport.settings.teleportTime = s switch
+                        {
+                            //"30s", "1m", "1m 30s", "2m", "3m", "5m", "10m", "Custom"
+                            0 => 30,
+                            1 => 60,
+                            2 => 90,
+                            3 => 120,
+                            4 => 180,
+                            5 => 300,
+                            6 => 600,
+                            7 => RandomTeleport.settings.customTime,
+                            _ => int.MaxValue,
+                        };
+
+                        RandomTeleport.settings.chosenCustomTime = s == 7;
+                        if (RandomTeleport.settings.chosenCustomTime)
+                        {
+                            MenuRef.Find("CustomTime").Show();
+                        }
+                        else
+                        {
+                            MenuRef.Find("CustomTime").Hide();
+                        }
+                        
                         RandomTeleport.Instance.ResetTimer();
-                        ((HorizontalOption)MenuRef.Find("timeTrigger")).Description = GetTimeTriggerDesc;
-                        ((HorizontalOption)MenuRef.Find("timeTrigger")).Update();
                     },
-                    () => (RandomTeleport.settings.teleportTime / 20) - 1, Id: "teleportTime")
+                    () =>
+                    {
+                        if (RandomTeleport.settings.chosenCustomTime) return 7;
+                        return RandomTeleport.settings.teleportTime switch
+                        {
+                            //"30s", "1m", "1m 30s", "2m", "3m", "5m", "10m", "Custom"
+                            30 => 0,
+                            60 => 1,
+                            90 => 2,
+                            120 => 3,
+                            180 => 4,
+                            300 => 5,
+                            600 => 6,
+                            _ => 7,
+                        };
+                    }, Id: "teleportTime")
                     {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time]},
+               
+               new TextPanel("Custom teleport time:", width: 1000f, Id: "CustomTime")
+                   {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time] && RandomTeleport.settings.chosenCustomTime},
 
                 new HorizontalOption("Time reduction from damage",
-                    "How much time is removed from the timer when the player takes damage. Negative values will increase time.",
-                    //generate list from -120 to 120 with 5 seconds increments
-                    Enumerable.Range(-24, 49).Select(x => (x * 5).ToString()).ToArray(),
-                    s => RandomTeleport.settings.timeLostFromHit = (s - 24) * 5,
-                    () => RandomTeleport.settings.timeLostFromHit / 5 + 24, Id: "damageTimeIncrease")
+                    "How much time is removed from the timer when the player takes damage",
+                    TimeReductionOptions,
+                    s =>
+                    {
+                        RandomTeleport.settings.timeLostFromHit = s switch
+                        {
+                            //"30s", "10s", "30s", "1m", "2m", "5m"
+                            0 => 5,
+                            1 => 10,
+                            2 => 30,
+                            3 => 60,
+                            4 => 120,
+                            5 => 300,
+                        };
+                    },
+                    () =>
+                    {
+                        return RandomTeleport.settings.timeLostFromHit switch
+                        {
+                            //"30s", "10s", "30s", "1m", "2m", "5m"
+                            5 => 0,
+                            10 => 1,
+                            30 => 2,
+                            60 => 3,
+                            120 => 4,
+                            300 => 5,
+                            _ => 0,
+                        };
+                    }, Id: "damageTimeIncrease")
                     {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time]},
 
-                new HorizontalOption("Time reduction from geo",
-                    "How much time is removed from the timer when the player collects geo. Negative values will increase time.",
-                    Enumerable.Range(-24, 49).Select(x => (x * 5).ToString()).ToArray(),
-                    s => RandomTeleport.settings.timeLostFromGeo = (s - 24) * 5,
-                    () => RandomTeleport.settings.timeLostFromGeo / 5 + 24, Id: "geoTimeIncrease")
+                new HorizontalOption("Time increase from geo",
+                    "How much time is gained from the timer when the player collects geo.",
+                    TimeReductionOptions,
+                    s =>
+                    {
+                        RandomTeleport.settings.timeGainFromGeo = s switch
+                        {
+                            //"30s", "10s", "30s", "1m", "2m", "5m"
+                            0 => 5,
+                            1 => 10,
+                            2 => 30,
+                            3 => 60,
+                            4 => 120,
+                            5 => 300,
+                        };
+                    },
+                    () =>
+                    {
+                        return RandomTeleport.settings.timeLostFromHit switch
+                        {
+                            //"30s", "10s", "30s", "1m", "2m", "5m"
+                            5 => 0,
+                            10 => 1,
+                            30 => 2,
+                            60 => 3,
+                            120 => 4,
+                            300 => 5,
+                            _ => 0,
+                        };
+                    }, Id: "geoTimeIncrease")
                     {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time]},
                 
                 new HorizontalOption("Chance of Teleport On Damage",
@@ -151,6 +251,12 @@ namespace RandomTeleport
             MenuRef.Find("previousSceneKey").OnVisibilityChange += (_, e) =>
                 ((MenuRow)e.Target).Row.ForEach(elem => elem.isVisible = e.Target.isVisible);
 
+            MenuRef.OnBuilt += (_, _) =>
+            {
+                MenuRef.Find("CustomTime").gameObject.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+                CreateInputField(MenuRef.Find("CustomTime").gameObject, "CustomTime", RandomTeleport.settings.customTime.ToString(), ParseTimeInput);
+            };
+            
             MainMenu = MenuRef.GetMenuScreen(modListMenu);
             ExtraMenu = CreateExtraSettings(MainMenu);
 
@@ -204,7 +310,7 @@ namespace RandomTeleport
             ExtraMenuRef.OnBuilt += (_, _) =>
             {
                 ExtraMenuRef.Find("Seed").gameObject.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
-                CreateInputField(ExtraMenuRef.Find("Seed").gameObject);
+                CreateInputField(ExtraMenuRef.Find("Seed").gameObject, "Seed", RandomTeleport.currentSeed.ToString(), ParseSeedInput);
             };
 
             return ExtraMenuRef.GetMenuScreen(modListMenu);
@@ -216,17 +322,26 @@ namespace RandomTeleport
             {
                 if(RandomTeleport.settings.TriggersState[trigger]) options.ForEach(id => MenuRef.Find(id).Show());
                 else options.ForEach(id => MenuRef.Find(id).Hide());
-            } 
+            }
+
+            if (RandomTeleport.settings.TriggersState[Triggers.Time] && RandomTeleport.settings.chosenCustomTime)
+            {
+                MenuRef.Find("CustomTime").Show();
+            }
+            else
+            {
+                MenuRef.Find("CustomTime").Hide();
+            }
             MenuRef.Update();
         }
 
         //yet another instance of rando code
-        private static void CreateInputField(GameObject parent)
+        private static void CreateInputField(GameObject parent, string name, string Initialtext, UnityAction<string> ParseInput)
         {
             UMenuButton backprefab = Object.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight
                 .FindSelectableOnDown().FindSelectableOnDown().gameObject).GetComponent<UMenuButton>();
             
-            GameObject seedGameObject = backprefab.Clone("Seed", UMenuButton.MenuButtonType.Activate, parent).gameObject;
+            GameObject seedGameObject = backprefab.Clone(name, UMenuButton.MenuButtonType.Activate, parent).gameObject;
             Object.DestroyImmediate(seedGameObject.GetComponent<UMenuButton>());
             Object.DestroyImmediate(seedGameObject.GetComponent<EventTrigger>());
             Object.DestroyImmediate(seedGameObject.transform.Find("Text").GetComponent<AutoLocalizeTextUI>());
@@ -241,11 +356,11 @@ namespace RandomTeleport
             customSeedInput.transform.localPosition = new Vector3(400, -50);
             customSeedInput.textComponent = seedGameObject.transform.Find("Text").GetComponent<Text>();
 
-            customSeedInput.text = RandomTeleport.currentSeed.ToString();
+            customSeedInput.text = Initialtext;
 
             customSeedInput.caretColor = Color.white;
             customSeedInput.contentType = InputField.ContentType.IntegerNumber;
-            customSeedInput.onEndEdit.AddListener(ParseSeedInput);
+            customSeedInput.onEndEdit.AddListener(ParseInput);
             customSeedInput.navigation = Navigation.defaultNavigation;
             customSeedInput.caretWidth = 8;
             customSeedInput.characterLimit = 6;
@@ -265,6 +380,18 @@ namespace RandomTeleport
             if (int.TryParse(input, out int newSeed))
             {
                 RandomTeleport.currentSeed = newSeed;
+            }
+            else
+            {
+                RandomTeleport.Instance.LogWarn($"Seed input \"{input}\" could not be parsed to an integer");
+            }
+        }
+        private static void ParseTimeInput(string input)
+        {
+            if (int.TryParse(input, out int newCustomTime))
+            {
+                RandomTeleport.settings.customTime = newCustomTime;
+                RandomTeleport.settings.teleportTime = newCustomTime;
             }
             else
             {

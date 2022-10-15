@@ -20,6 +20,8 @@ namespace RandomTeleport
     public class GlobalSettings
     {
         public int teleportTime = 120;
+        public int customTime = 120;
+        public bool chosenCustomTime = false;
         public Dictionary<Triggers,bool> TriggersState = new() 
         { 
             {Triggers.Time, true},
@@ -30,7 +32,7 @@ namespace RandomTeleport
         //Time
         public bool showTimer = true;
         public int timeLostFromHit = 0;
-        public int timeLostFromGeo = 0;
+        public int timeGainFromGeo = 0;
         
         //Damage
         public int chanceOfTeleportOnDamage = 100;
