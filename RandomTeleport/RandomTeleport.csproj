@@ -3,7 +3,7 @@
     <ProjectGuid>{330F261C-3700-41B5-8770-3542243DD26A}</ProjectGuid>
     <RootNamespace>RandomTeleport</RootNamespace>
     <AssemblyTitle>RandomTeleport</AssemblyTitle>
-    <AssemblyVersion>0.0.6.0</AssemblyVersion>
+    <AssemblyVersion>0.0.6.1</AssemblyVersion>
     <Deterministic>true</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>

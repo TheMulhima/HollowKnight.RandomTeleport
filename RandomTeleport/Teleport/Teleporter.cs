@@ -2,14 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using GlobalEnums;
-using HKMirror;
-using HutongGames.PlayMaker.Actions;
-using MonoMod.Utils;
+using HKMirror.Reflection.SingletonClasses;
+using HKMirror.Reflection;
 using Satchel;
 using UnityEngine;
-using ReflectionHelper = Modding.ReflectionHelper;
 
 namespace RandomTeleport
 {

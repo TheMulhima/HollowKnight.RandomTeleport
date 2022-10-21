@@ -4,7 +4,7 @@ using System.Diagnostics.Eventing;
 using System.Linq;
 using System.Text;
 using HKMirror;
-using HKMirror.InstanceClasses;
+using HKMirror.Reflection;
 using Modding;
 using Newtonsoft.Json;
 
@@ -14,7 +14,7 @@ namespace RandomTeleport.Utils
     {
         public override void WriteJson(JsonWriter writer, Random value, JsonSerializer serializer)
         {
-            RandomR random = value.Reflect();
+            var random = value.Reflect();
             writer.WriteStartObject();
             
             /* System.Random has 3 const int we dont care about to serialize because it is const
@@ -37,7 +37,7 @@ namespace RandomTeleport.Utils
 
         public override Random ReadJson(JsonReader reader, Type objectType, Random existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            RandomR random = new System.Random().Reflect();
+            var random = new System.Random().Reflect();
             
             reader.Read(); //property name
             reader.Read(); //inext value
