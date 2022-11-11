@@ -153,23 +153,26 @@ namespace RandomTeleport
                     }, Id: "teleportTime")
                     {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time]},
                
-               new TextPanel("Custom teleport time:", width: 1000f, Id: "CustomTime")
-                   {isVisible = RandomTeleport.settings.TriggersState[Triggers.Time] && RandomTeleport.settings.chosenCustomTime},
+               Blueprints.IntInputField("Custom time (seconds)", 
+                   s => RandomTeleport.settings.customTime = s,
+                   () => RandomTeleport.settings.customTime,
+                   _placeholder: "Write time here", Id:"CustomTime"),
 
-                new HorizontalOption("Time reduction from damage",
+               new HorizontalOption("Time reduction from damage",
                     "How much time is removed from the timer when the player takes damage",
                     TimeReductionOptions,
                     s =>
                     {
                         RandomTeleport.settings.timeLostFromHit = s switch
                         {
-                            //"30s", "10s", "30s", "1m", "2m", "5m"
+                            //"5s", "10s", "30s", "1m", "2m", "5m"
                             0 => 5,
                             1 => 10,
                             2 => 30,
                             3 => 60,
                             4 => 120,
                             5 => 300,
+                            _ => 10
                         };
                     },
                     () =>
@@ -195,13 +198,14 @@ namespace RandomTeleport
                     {
                         RandomTeleport.settings.timeGainFromGeo = s switch
                         {
-                            //"30s", "10s", "30s", "1m", "2m", "5m"
+                            //"5s", "10s", "30s", "1m", "2m", "5m"
                             0 => 5,
                             1 => 10,
                             2 => 30,
                             3 => 60,
                             4 => 120,
                             5 => 300,
+                            _ => 10,
                         };
                     },
                     () =>
@@ -250,13 +254,9 @@ namespace RandomTeleport
             
             MenuRef.Find("previousSceneKey").OnVisibilityChange += (_, e) =>
                 ((MenuRow)e.Target).Row.ForEach(elem => elem.isVisible = e.Target.isVisible);
-
-            MenuRef.OnBuilt += (_, _) =>
-            {
-                MenuRef.Find("CustomTime").gameObject.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
-                CreateInputField(MenuRef.Find("CustomTime").gameObject, "CustomTime", RandomTeleport.settings.customTime.ToString(), ParseTimeInput);
-            };
             
+            MenuRef.Find("CustomTime").isVisible = RandomTeleport.settings.TriggersState[Triggers.Time] && RandomTeleport.settings.chosenCustomTime;
+
             MainMenu = MenuRef.GetMenuScreen(modListMenu);
             ExtraMenu = CreateExtraSettings(MainMenu);
 
@@ -268,8 +268,12 @@ namespace RandomTeleport
         {
             ExtraMenuRef = new Menu("Extra Settings", new Element[]
             {
-                new TextPanel("RNG Seed for new saves:", width: 1000f, Id: "Seed"),
-                
+                Blueprints.IntInputField("RNG Seed for new saves", 
+                    s => RandomTeleport.saveSettings.seed = s,
+                    () => RandomTeleport.saveSettings.seed,
+                    _placeholder: "Write seed here",
+                    _characterLimit: 9),
+
                 new HorizontalOption("Same Area Teleport",
                     "Randomly teleport you in the same area",
                     new [] { "Yes", "No" },
@@ -306,13 +310,6 @@ namespace RandomTeleport
                     Id:"resetTimer")
             });
 
-
-            ExtraMenuRef.OnBuilt += (_, _) =>
-            {
-                ExtraMenuRef.Find("Seed").gameObject.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
-                CreateInputField(ExtraMenuRef.Find("Seed").gameObject, "Seed", RandomTeleport.currentSeed.ToString(), ParseSeedInput);
-            };
-
             return ExtraMenuRef.GetMenuScreen(modListMenu);
         }
 
@@ -333,91 +330,6 @@ namespace RandomTeleport
                 MenuRef.Find("CustomTime").Hide();
             }
             MenuRef.Update();
-        }
-
-        //yet another instance of rando code
-        private static void CreateInputField(GameObject parent, string name, string Initialtext, UnityAction<string> ParseInput)
-        {
-            UMenuButton backprefab = Object.Instantiate(UIManager.instance.playModeMenuScreen.defaultHighlight
-                .FindSelectableOnDown().FindSelectableOnDown().gameObject).GetComponent<UMenuButton>();
-            
-            GameObject seedGameObject = backprefab.Clone(name, UMenuButton.MenuButtonType.Activate, parent).gameObject;
-            Object.DestroyImmediate(seedGameObject.GetComponent<UMenuButton>());
-            Object.DestroyImmediate(seedGameObject.GetComponent<EventTrigger>());
-            Object.DestroyImmediate(seedGameObject.transform.Find("Text").GetComponent<AutoLocalizeTextUI>());
-            Object.DestroyImmediate(seedGameObject.transform.Find("Text").GetComponent<FixVerticalAlign>());
-            Object.DestroyImmediate(seedGameObject.transform.Find("Text").GetComponent<ContentSizeFitter>());
-
-            RectTransform seedRect = seedGameObject.transform.Find("Text").GetComponent<RectTransform>();
-            seedRect.anchorMin = seedRect.anchorMax = new Vector2(0.5f, 0.5f);
-            seedRect.sizeDelta = new Vector2(337, 63.2f);
-
-            InputField customSeedInput = seedGameObject.AddComponent<InputField>();
-            customSeedInput.transform.localPosition = new Vector3(400, -50);
-            customSeedInput.textComponent = seedGameObject.transform.Find("Text").GetComponent<Text>();
-
-            customSeedInput.text = Initialtext;
-
-            customSeedInput.caretColor = Color.white;
-            customSeedInput.contentType = InputField.ContentType.IntegerNumber;
-            customSeedInput.onEndEdit.AddListener(ParseInput);
-            customSeedInput.navigation = Navigation.defaultNavigation;
-            customSeedInput.caretWidth = 8;
-            customSeedInput.characterLimit = 6;
-
-            customSeedInput.colors = new ColorBlock
-            {
-                highlightedColor = Color.yellow,
-                pressedColor = Color.red,
-                disabledColor = Color.black,
-                normalColor = Color.white,
-                colorMultiplier = 2f
-            };
-        }
-        
-        private static void ParseSeedInput(string input)
-        {
-            if (int.TryParse(input, out int newSeed))
-            {
-                RandomTeleport.currentSeed = newSeed;
-            }
-            else
-            {
-                RandomTeleport.Instance.LogWarn($"Seed input \"{input}\" could not be parsed to an integer");
-            }
-        }
-        private static void ParseTimeInput(string input)
-        {
-            if (int.TryParse(input, out int newCustomTime))
-            {
-                RandomTeleport.settings.customTime = newCustomTime;
-                RandomTeleport.settings.teleportTime = newCustomTime;
-            }
-            else
-            {
-                RandomTeleport.Instance.LogWarn($"Seed input \"{input}\" could not be parsed to an integer");
-            }
-        }
-        
-        public static UMenuButton Clone(this UMenuButton self, 
-            string name, 
-            UMenuButton.MenuButtonType type, 
-            GameObject parent)
-        {
-            // Set up duplicate of button
-            UMenuButton newBtn = Object.Instantiate(self.gameObject).GetComponent<UMenuButton>();
-            newBtn.name = name;
-            newBtn.buttonType = type;
-
-            Transform transform = newBtn.transform;
-            transform.SetParent(parent.transform);
-            transform.localScale = self.transform.localScale;
-
-            // Change text on the button
-            Transform textTrans = newBtn.transform.Find("Text");
-            Object.Destroy(textTrans.GetComponent<AutoLocalizeTextUI>());
-                
-            return newBtn;
         }
     }
 }

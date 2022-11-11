@@ -28,7 +28,7 @@ namespace RandomTeleport.TeleportTriggers
             //add a display timer
             if (layout == null)
             {
-                layout = new(true, false, "RandomGravityChange Display Timer");
+                layout = new(true, "RandomGravityChange Display Timer");
 
                 displayTimer = new TextObject(layout)
                 {
