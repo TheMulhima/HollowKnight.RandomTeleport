@@ -65,7 +65,7 @@ namespace RandomTeleport.TeleportTriggers
         private void GeoGained(On.GeoCounter.orig_AddGeo orig, GeoCounter self, int geo)
         {
             orig(self, geo);
-            timer += RandomTeleport.settings.timeGainFromGeo;
+            timer -= RandomTeleport.settings.timeGainFromGeo;
         }
 
         private int HeroDamaged(int hazardType, int damageAmount)

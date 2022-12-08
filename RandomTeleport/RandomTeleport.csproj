@@ -3,7 +3,7 @@
     <ProjectGuid>{330F261C-3700-41B5-8770-3542243DD26A}</ProjectGuid>
     <RootNamespace>RandomTeleport</RootNamespace>
     <AssemblyTitle>RandomTeleport</AssemblyTitle>
-    <AssemblyVersion>0.0.6.2</AssemblyVersion>
+    <AssemblyVersion>0.0.6.3</AssemblyVersion>
     <Deterministic>true</Deterministic>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>latest</LangVersion>
@@ -68,9 +68,6 @@
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>$(HollowKnightFolder)\Managed\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(HollowKnightFolder)\UnityEngine.UIModule.dll</HintPath>

@@ -25,8 +25,8 @@ There are many settings that can be toggled in the modmenu
 #### Time Trigger Settings
   * `Show Timer`: Decides wheter to show the a display timer ingame or not. (default: true)
   * `Random Teleport Time`: Choose the time between teleports (in seconds) (default: 120)
-  * `Time reduction from damage`: How much time is removed from the timer when the player takes damage. Negative values will increase time. Can be set to 0 if you dont want this feature (default: 0)
-  * `Time reduction from geo`: How much time is removed from the timer when the player collects geo. Negative values will increase time. Can be set to 0 if you dont want this feature (default: 0)
+  * `Time reduction from damage`: How much time is removed from the timer when the player takes damages. Can be set to 0 if you dont want this feature (default: 0)
+  * `Time increase from geo`: How much time is gained in the timer when the player collects geo. Can be set to 0 if you dont want this feature (default: 0)
 #### Damage Trigger Settings
   * `Chance of Teleport On Damage`: When you take damage how likely are you to be teleported in % (default: 100).
 #### KeyPress Trigger Settings

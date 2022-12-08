@@ -3,3 +3,4 @@ RandomTeleport/.idea/*
 RandomTeleport/obj/*
 RandomTeleport/bin/*
 *.zip
+.vs/*

@@ -37,7 +37,7 @@ namespace RandomTeleport
         
         private static readonly string[] TimeReductionOptions = new string[]
         {
-            "5s", "10s", "30s", "1m", "2m", "5m"
+            "Off", "5s", "10s", "30s", "1m", "2m", "5m"
         };
 
         private static string GetTimeTriggerDesc => $"If Enabled you will be randomly teleported every {RandomTeleport.settings.teleportTime}";
@@ -165,27 +165,29 @@ namespace RandomTeleport
                     {
                         RandomTeleport.settings.timeLostFromHit = s switch
                         {
-                            //"5s", "10s", "30s", "1m", "2m", "5m"
-                            0 => 5,
-                            1 => 10,
-                            2 => 30,
-                            3 => 60,
-                            4 => 120,
-                            5 => 300,
-                            _ => 10
+                            //off, "5s", "10s", "30s", "1m", "2m", "5m"
+                            0 => 0,
+                            1 => 5,
+                            2 => 10,
+                            3 => 30,
+                            4 => 60,
+                            5 => 120,
+                            6 => 300,
+                            _ => 0
                         };
                     },
                     () =>
                     {
                         return RandomTeleport.settings.timeLostFromHit switch
                         {
-                            //"30s", "10s", "30s", "1m", "2m", "5m"
-                            5 => 0,
-                            10 => 1,
-                            30 => 2,
-                            60 => 3,
-                            120 => 4,
-                            300 => 5,
+                            //off "5s", "10s", "30s", "1m", "2m", "5m"
+                            0 => 0,
+                            5 => 1,
+                            10 => 2,
+                            30 => 3,
+                            60 => 4,
+                            120 => 5,
+                            300 => 6,
                             _ => 0,
                         };
                     }, Id: "damageTimeIncrease")
@@ -199,26 +201,28 @@ namespace RandomTeleport
                         RandomTeleport.settings.timeGainFromGeo = s switch
                         {
                             //"5s", "10s", "30s", "1m", "2m", "5m"
-                            0 => 5,
-                            1 => 10,
-                            2 => 30,
-                            3 => 60,
-                            4 => 120,
-                            5 => 300,
-                            _ => 10,
+                            0 => 0,
+                            1 => 5,
+                            2 => 10,
+                            3 => 30,
+                            4 => 60,
+                            5 => 120,
+                            6 => 300,
+                            _ => 0
                         };
                     },
                     () =>
                     {
-                        return RandomTeleport.settings.timeLostFromHit switch
+                        return RandomTeleport.settings.timeGainFromGeo switch
                         {
-                            //"30s", "10s", "30s", "1m", "2m", "5m"
-                            5 => 0,
-                            10 => 1,
-                            30 => 2,
-                            60 => 3,
-                            120 => 4,
-                            300 => 5,
+                            //"5s", "10s", "30s", "1m", "2m", "5m"
+                            0 => 0,
+                            5 => 1,
+                            10 => 2,
+                            30 => 3,
+                            60 => 4,
+                            120 => 5,
+                            300 => 6,
                             _ => 0,
                         };
                     }, Id: "geoTimeIncrease")
